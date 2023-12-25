@@ -7,6 +7,12 @@ function init_globals() {
 	#macro SENTRY global.sentry
 	SENTRY = new Sentry();
 	LOGGER.use_sentry(SENTRY);
+	
+	// Data managers
+	#macro DATA global.data
+	DATA = {
+		password: new Password(),
+	}
 
 	// The webserver
 	#macro SERVER global.server

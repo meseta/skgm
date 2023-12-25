@@ -16,6 +16,9 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 			if (_context.has_session()) {
 				return ViewMain.render(_context);	
 			}
+			else if (!DATA.password.has_password()) {
+				return ViewSetPassword.render(_context);
+			}
 			else {
 				return ViewLogin.render(_context);
 			}
@@ -33,6 +36,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 			route: self.render_route(_context),
 			navigation: _navigation.render(_context),
 			footer: _footer.render(_context),
+			context: _context,
 		}).chain_callback(function(_rendered) {
 			/// Feather ignore once GM1009
 			return @'
@@ -48,6 +52,8 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 					
 					<script src="/static/htmx/htmx.min.js"></script>
 					<script src="/static/htmx/ext_ws.min.js"></script>
+					
+					'+ (struct_exists(_rendered.context.data, "redirect") ? $"<meta http-equiv='Refresh' content='0; URL={_rendered.context.data.redirect}' />" : "") +@'
 					
 					<meta name="description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
 					<meta name="theme-color" content="#76428a" />

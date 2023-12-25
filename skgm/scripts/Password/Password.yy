@@ -1,14 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "ViewLogin",
+  "name": "Password",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Auth",
-    "path": "folders/Website/Pages/Auth.yy",
+    "name": "Data Managers",
+    "path": "folders/Data Managers.yy",
   },
-  "tags": [
-    "http_view",
-  ],
 }

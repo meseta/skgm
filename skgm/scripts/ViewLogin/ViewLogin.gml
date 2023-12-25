@@ -1,44 +1,57 @@
-function ViewLogin(): HttpServerRenderBase() constructor {
+function ViewLogin(): HtmxView() constructor {
 	// View setup
 	static path = "login";
 	static redirect_path = "";
 	
-	/** Handle function for processing a request
-	 * @param {Struct.HttpServerRequestContext} _context The incoming request contex
-	 */
-	static handler = function(_context) {
-		if (_context.request.method == "POST") {
-			if (_context.request.get_form("password") == "123123") {
-				_context.start_session(7*24*3600);
-				// redirect to main
-				throw new ExceptionHttpServerInternalRedirect(self.redirect_path);
-			}
-		}
-		
-		_context.push_render_stack(method(self, self.render));
-		throw new ExceptionHttpServerInternalRedirect(self.redirect_path);
-	};
-	
+	static modal_id = self.auto_id("modal");
+
 	static render = function(_context) {
-		var _error_message = "";
-		if (_context.request.has_form("password") && !_context.has_session()) {
-			_error_message = "<p><mark>Invalid password, please try again</mark></p>";
+		var _validation = self.__validate_password(_context.request.get_form("password"));
+		
+		if (_validation.success == true) {
+			// password accepted
+			_context.start_session();
+			
+			// get HX to redirect
+			self.hx_redirect(_context, ViewMain.path)
+			
+			// fallback, use redirect facility inside ViewMain
+			_context.data.redirect = ViewMain.path;
 		}
+
 		return @'
-			<div class="grid">
-				<div></div>
-				<form action="/login" method="POST">
-					<article style="text-align: center; margin-top: 0; margin-bottom: 0;">
-						<header>
-							<h1 style="margin-bottom: 0;">Login</h1>
-						</header>
-						'+ _error_message +@'
-						<input type="password" id="password" name="password" placeholder="Admin Password" required>
-						<button type="submit">Log in</button>
-					</article>
+			<article id="'+ self.modal_id +@'" style="text-align: center; margin: 0px auto; max-width: 400px;">
+				<header>
+					<h1 style="margin-bottom: 0;">Login</h1>
+				</header>
+				<form hx-boost="true" hx-target="#'+ self.modal_id +@'" hx-swap="outerHTML" action="/'+ self.path +@'" method="POST">
+					<p>'+ (is_string(_validation.message) ?  $"<mark>{_validation.message}</mark>" : "") + @'</p>
+					
+					'+ (_validation.success != true
+						? @'<input type="password" name="password" placeholder="Admin Password" aria-label="Admin password" required>
+							<button type="submit">Log in</button>'
+						: ""
+					) + @'
 				</form>
-				<div></div>
-			</div>
+			</article>
 		';
-	};
+	}
+		
+	static __validate_password = function(_password) {
+		if (is_undefined(_password)) {
+			return new self.__Validation();	
+		}
+		if (_password == "") {
+			return new self.__Validation(false, "Please enter a password");	
+		}
+		if (!DATA.password.check_password(_password)) {
+			return new self.__Validation(false, "Password was incorrect, please try again");	
+		}
+		return new self.__Validation(true, $"Successfully logged in, if you're not redirected, click <a href='/{ViewMain.path}'>here</a>");
+	}
+	
+	static __Validation = function(_success=undefined, _message=undefined) constructor {
+		self.success = _success;
+		self.message = _message;
+	}
 }

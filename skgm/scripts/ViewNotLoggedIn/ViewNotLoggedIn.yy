@@ -1,7 +1,7 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "ViewLogin",
+  "name": "ViewNotLoggedIn",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
