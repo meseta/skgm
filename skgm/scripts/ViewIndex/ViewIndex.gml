@@ -19,7 +19,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 				return ViewSetPassword.render(_context);
 			}
 			else {
-				return ViewLogin.render(_context);
+				return ViewLog_In.render(_context);
 			}
 		}
 	};

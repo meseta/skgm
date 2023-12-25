@@ -1,4 +1,4 @@
-function ViewLogin(): HtmxView() constructor {
+function ViewLog_In(): HtmxView() constructor {
 	// View setup
 	static path = "login";
 	static redirect_path = "";

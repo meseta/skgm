@@ -12,7 +12,7 @@ function ViewLogOut(): HtmxView() constructor {
 				<header>
 					<h1 style="margin-bottom: 0;">You have been logged out</h1>
 				</header>
-				<p>You have been logged out. <a href="/'+ ViewLogin.path + @'">click here to log in</a>.</p>
+				<p>You have been logged out. <a href="/'+ ViewLog_In.path + @'">click here to log in</a>.</p>
 			</article>
 		';
 	}

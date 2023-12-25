@@ -47,7 +47,7 @@ function ViewSetPassword(): HtmxView() constructor {
 						? @'<input type="password" name="password" placeholder="Admin Password" aria-label="Admin Password" required>
 							<input type="password" name="password_confirm" placeholder="Confirm Password" aria-labe="Confirm Password" required>
 							<button type="submit">Set Admin Password</button>'
-						: @'<a href="/'+ViewLogin.path+@'">Click here to log in</a>'
+						: @'<a href="/'+ViewLog_In.path+@'">Click here to log in</a>'
 					) + @'
 				</form>
 			</article>

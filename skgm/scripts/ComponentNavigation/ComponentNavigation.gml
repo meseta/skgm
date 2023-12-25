@@ -1,7 +1,7 @@
 function ComponentNavigation(): HtmlComponent() constructor {
 	static render = function(_context) {
 		static _logged_out_links = [
-			new ComponentNavigationLink(ViewIndex.content_id, ViewLogin.path, "Log In"),
+			new ComponentNavigationLink(ViewIndex.content_id, ViewLog_In.path, "Log In"),
 		];
 		
 		static _logged_in_links = [
