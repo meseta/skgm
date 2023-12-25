@@ -19,7 +19,11 @@ function HttpServerRequestContext(_request, _response=undefined, _logger=undefin
 	// check of session cookie
 	if (self.request.has_cookie(self.session_cookie_name)) {
 		var _session_id = self.request.get_cookie(self.session_cookie_name);
+		if (is_array(_session_id)) {
+			_session_id = _session_id[0];
+		}
 		self.session = self.session_storage[$ string(_session_id)];
+		self.logger.info("Request has session", {session_id: _session_id});
 	}
 	
 	/* @ignore */ self.__render_stack = [];
@@ -56,6 +60,9 @@ function HttpServerRequestContext(_request, _response=undefined, _logger=undefin
 	 * @param {Real} _expires_seconds How long the session lasts, in seconds
 	 */
 	static start_session = function(_expires_seconds=24*3600) {
+		if (!is_undefined(self.session)) {
+			self.close_session()
+		}
 		var _session_id = self.__uuid4();
 		self.session = new HttpServerLoginSession(_session_id, _expires_seconds);
 		self.session_storage[$ _session_id] = self.session;
@@ -73,6 +80,17 @@ function HttpServerRequestContext(_request, _response=undefined, _logger=undefin
 		self.session.extend(_expires_seconds);
 		self.__set_session_cookie(self.session.session_id, _expires_seconds);
 		self.logger.info("Session extended", {session_id: self.session.session_id});
+	}
+	
+	/** Expire the session, cause the session to stop */
+	static close_session = function() {
+		if (!is_undefined(self.session)) {
+			self.session.extend(0);
+			self.__set_session_cookie(self.session.session_id, 0);
+			self.logger.info("Session closed", {session_id: self.session.session_id});
+			struct_remove(self.session_storage, self.session.session_id);
+			self.session = undefined;
+		}
 	}
 	
 	static __set_session_cookie = function(_session_id, _max_age) {

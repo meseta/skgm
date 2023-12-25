@@ -35,6 +35,7 @@ function ViewSetPassword(): HtmxView() constructor {
 		}
 		
 		return @'
+			<title>Set Password</title>
 			<article id="'+ self.modal_id +@'" style="text-align: center; margin: 0px auto; max-width: 400px;">
 				<header>
 					<h1 style="margin-bottom: 0;">Set Admin Password</h1>

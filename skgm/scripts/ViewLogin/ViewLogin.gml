@@ -20,9 +20,10 @@ function ViewLogin(): HtmxView() constructor {
 		}
 
 		return @'
+			<title>Log In</title>
 			<article id="'+ self.modal_id +@'" style="text-align: center; margin: 0px auto; max-width: 400px;">
 				<header>
-					<h1 style="margin-bottom: 0;">Login</h1>
+					<h1 style="margin-bottom: 0;">Log In</h1>
 				</header>
 				<form hx-boost="true" hx-target="#'+ self.modal_id +@'" hx-swap="outerHTML" action="/'+ self.path +@'" method="POST">
 					<p>'+ (is_string(_validation.message) ?  $"<mark>{_validation.message}</mark>" : "") + @'</p>

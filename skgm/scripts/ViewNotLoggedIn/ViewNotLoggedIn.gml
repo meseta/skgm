@@ -5,6 +5,7 @@ function ViewNotLoggedIn(): HtmxView() constructor {
 
 	static render = function(_context) {
 		return @'
+			<title>Not Logged In</title>
 			<article style="text-align: center; margin: 0px auto; max-width: 400px;">
 				<header>
 					<h1 style="margin-bottom: 0;">You are not logged in</h1>

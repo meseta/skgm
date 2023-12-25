@@ -4,7 +4,6 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 	
 	// Static properties
 	static content_id = self.auto_id("content");
-	static title = "ServerKit GameMaker";
 
 	// Rendering dynamic routes
 	static render_route = function(_context) {
@@ -38,13 +37,16 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 			footer: _footer.render(_context),
 			context: _context,
 		}).chain_callback(function(_rendered) {
+			// try to figure out title from our content
+			var _title = self.__find_title(_rendered.route)
+			
 			/// Feather ignore once GM1009
 			return @'
 				<!DOCTYPE html>
 				<html data-theme="light" lang="en"style="height: 100%">
 				<head>
 					<meta charset="utf-8">
-					<title>'+ self.title +@'</title>
+					<title>'+ (_title ?? "ServerKit GameMaker") +@'</title>
 					<link rel="icon" type="image/png" href="/images/sFavicon.png">
 					<meta name="viewport" content="width=device-width, initial-scale=1">
 					<link rel="stylesheet" href="/static/pico/pico.min.css">
@@ -77,5 +79,19 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 				</body>
 				</html>
 		'});
+	};
+		
+	static __find_title = function(_html) {
+		var _pos_start = string_pos("<title>", _html);
+		if (_pos_start < 1) {
+			return undefined;
+		}
+		
+		var _pos_end = string_pos("</title>", _html);
+		if (_pos_start < 1) {
+			return undefined;
+		}
+		
+		return string_copy(_html, _pos_start+7, _pos_end-_pos_start-7);
 	};
 }
