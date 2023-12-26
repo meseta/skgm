@@ -12,7 +12,8 @@ function init_globals() {
 	#macro DATA global.data
 	DATA = {
 		password: new Password(),
-		deployments: new Deployments(),
+		deployment_storage: new DeploymentStorage(),
+		deployment_manager: new DeploymentManager(),
 	}
 
 	// The webserver

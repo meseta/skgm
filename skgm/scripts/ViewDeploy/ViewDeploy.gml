@@ -2,6 +2,8 @@ function ViewDeploy(): HtmxView() constructor {
 	// View setup
 	static path = "deploy";
 	static redirect_path = "main";
+	static no_session_redirect_path = "not-logged-in";
+	static should_cache = false;
 	
 	static render = function(_context) {
 		var _message = undefined;
@@ -15,8 +17,8 @@ function ViewDeploy(): HtmxView() constructor {
 			}
 		
 			if (!is_undefined(_file)) {
-				if (DATA.deployments.check_buffer(_file.buffer)) {
-					DATA.deployments.add(_file.buffer, _name);
+				if (DATA.deployment_storage.check_buffer(_file.buffer)) {
+					DATA.deployment_storage.add(_file.buffer, _name);
 					_message = @'New version "'+ _name + @'" successfully uploaded';
 				}
 				else {
@@ -26,25 +28,27 @@ function ViewDeploy(): HtmxView() constructor {
 		}
 		else if (_context.request.get_query("action") == "delete") {
 			var _deployment_id = _context.request.get_query("deployment_id");
-			if (DATA.deployments.has(_deployment_id)) {
-				var _deployment = DATA.deployments.get(_deployment_id);
-				DATA.deployments.remove(_deployment_id);
+			if (DATA.deployment_storage.has(_deployment_id)) {
+				var _deployment = DATA.deployment_storage.get(_deployment_id);
+				DATA.deployment_storage.remove(_deployment_id);
 				_message = @'Deployment "' + _deployment.name + @'" sucessfully delete';
 			}
 			else {
 				_message = "Deployment could not be found";
 			}
+			self.hx_replace_url(_context, self.path);
 		}
 		else if (_context.request.get_query("action") == "deploy") {
 			var _deployment_id = _context.request.get_query("deployment_id");
-			if (DATA.deployments.has(_deployment_id)) {
-				var _deployment = DATA.deployments.get(_deployment_id);
-				DATA.deployments.deploy(_deployment_id);
+			if (DATA.deployment_storage.has(_deployment_id)) {
+				var _deployment = DATA.deployment_storage.get(_deployment_id);
+				DATA.deployment_manager.deploy(_deployment_id, DATA.deployment_storage.get_path(_deployment_id));
 				_message = @'Deployment "' + _deployment.name + @'" sucessfully deployed';
 			}
 			else {
 				_message = "Deployment could not be found";
 			}
+			self.hx_replace_url(_context, self.path);
 		}
 		
 		var _render = @'
@@ -86,8 +90,8 @@ function ViewDeploy(): HtmxView() constructor {
 				</header>
 		');
 		
-		var _current_id = DATA.deployments.get_current_id();
-		var _deployments = DATA.deployments.list();
+		var _current_id = DATA.deployment_manager.get_current_id();
+		var _deployments = DATA.deployment_storage.list();
 		var _len = array_length(_deployments);
 		if (_len > 0) {
 			_render += @'

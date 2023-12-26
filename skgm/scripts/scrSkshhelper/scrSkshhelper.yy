@@ -1,11 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "Deployments",
+  "name": "scrSkshhelper",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Data Managers",
-    "path": "folders/Data Managers.yy",
+    "name": "Deployment",
+    "path": "folders/Data Managers/Deployment.yy",
   },
 }

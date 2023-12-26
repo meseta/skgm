@@ -2,6 +2,7 @@ function ViewLog_In(): HtmxView() constructor {
 	// View setup
 	static path = "login";
 	static redirect_path = "";
+	static should_cache = false;
 	
 	static modal_id = self.auto_id("modal");
 

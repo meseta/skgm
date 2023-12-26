@@ -2,7 +2,8 @@ function ViewSetPassword(): HtmxView() constructor {
 	// View setup
 	static path = "set-password";
 	static redirect_path = "";
-	static no_session_redirect_path = ViewNotLoggedIn.path;
+	static no_session_redirect_path = "not-logged-in";
+	static should_cache = false;
 	
 	static modal_id = self.auto_id("modal");
 	

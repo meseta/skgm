@@ -2,6 +2,7 @@ function ViewNotLoggedIn(): HtmxView() constructor {
 	// View setup
 	static path = "not-logged-in";
 	static redirect_path = "";
+	static should_cache = false;
 
 	static render = function(_context) {
 		return @'
