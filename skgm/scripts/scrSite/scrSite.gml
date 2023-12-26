@@ -11,5 +11,8 @@ function init_site(){
 
 	// add views
 	SERVER.add_renders_by_tag("http_view");
+	
+	// websocket
+	SERVER.add_render(WebsocketDashboardLogs, true);
 }
 

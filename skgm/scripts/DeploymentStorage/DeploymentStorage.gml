@@ -77,6 +77,7 @@ function DeploymentStorage(_directory="deployments") constructor {
 	/** Add a new deployment
 	 * @param {Id.Buffer} _buffer The buffer containing the deployment file
 	 * @param {String} _name The nickname of the deployment
+	 * @return {String}
 	 */
 	static add = function(_buffer, _name) {
 		self.__ensure_directory();
@@ -100,6 +101,7 @@ function DeploymentStorage(_directory="deployments") constructor {
 		self.__deployment_lookup[$ _deployment_id] = _deployment;
 		
 		self.__save();
+		return _deployment_id;
 	}
 	
 	/** Check that the buffer contains a valid AppImage (just a bit of extra safety)

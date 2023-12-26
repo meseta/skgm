@@ -7,6 +7,8 @@ function DeploymentManager() constructor {
 	self.__output_buffer = [];
 	self.__timer = undefined;
 	
+	self.__listeners = [];
+	
 	/** Get the currently deployed deployment_id
 	 * @return {String}
 	 */
@@ -34,7 +36,7 @@ function DeploymentManager() constructor {
 		
 		if (_existing_is_open) {
 			// close the old one
-			Skshhelper.close(self.__current);	
+			Skshhelper.close(self.__deployment_id);	
 		}
 		
 		self.__output_buffer = [];
@@ -59,6 +61,13 @@ function DeploymentManager() constructor {
 			Skshhelper.close(self.__deployment_id);
 			Skshhelper.open(self.__path, self.__deployment_id);
 			self.__output_buffer = [];
+			
+			// clear out the lines
+			array_foreach(self.__listeners, function(_listener) {
+				if (weak_ref_alive(_listener)) {
+					_listener.ref.push_lines([], true);	
+				}
+			})
 		}
 	}
 	
@@ -66,13 +75,21 @@ function DeploymentManager() constructor {
 	 * @return {Array<String>}
 	 */
 	static get_output = function() {
-		return self.__output_buffer;	
+		return self.__output_buffer;
+	}
+	
+	/** Register a listener to receive updates
+	 * @param {Struct} _listener A listener
+	 */
+	static register_listener = function(_listener) {
+		array_push(self.__listeners, weak_ref_create(_listener));
 	}
 	
 	/** Collect the stdout into a limited length array
 	 * @ignore
 	 */
 	static __collect_output = function() {
+		var _lines = [];
 		repeat (10000) { // maximum lines!
 			var _line = Skshhelper.read();
 			if (_line == "") {
@@ -81,12 +98,26 @@ function DeploymentManager() constructor {
 			var _filtered_line = string_trim_end(string_replace_all(string_replace_all(_line, "<", "&lt;"), ">", "&gt;"))
 			// filter line
 			array_push(self.__output_buffer, _filtered_line);
+			array_push(_lines, _filtered_line);
 		}
 		
-		// trim history to length
-		var _delete_amount = array_length(self.__output_buffer) - self.max_output_lines;
-		if (_delete_amount > 0) {
-			array_delete(self.__output_buffer, 0, _delete_amount);
+		// push to listeners
+		if (array_length(_lines) > 0) {
+			for (var _i=array_length(self.__listeners)-1; _i>=0; _i-=1) {
+				var _listener = self.__listeners[_i];
+				if (weak_ref_alive(_listener)) {
+					_listener.ref.push_lines(_lines);	
+				}
+				else {
+					array_delete(self.__listeners, _i, 1);	
+				}
+			}
+		
+			// trim history to length
+			var _delete_amount = array_length(self.__output_buffer) - self.max_output_lines;
+			if (_delete_amount > 0) {
+				array_delete(self.__output_buffer, 0, _delete_amount);
+			}
 		}
 	}
 }

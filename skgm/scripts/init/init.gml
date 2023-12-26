@@ -17,7 +17,7 @@ else {
 	// When deployed...
 	
 	// slow everything down
-	game_set_speed(20, gamespeed_fps);
+	game_set_speed(10, gamespeed_fps);
 
 	// turn off drawing
 	draw_enable_drawevent(false);

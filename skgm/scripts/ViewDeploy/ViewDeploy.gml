@@ -18,8 +18,10 @@ function ViewDeploy(): HtmxView() constructor {
 		
 			if (!is_undefined(_file)) {
 				if (DATA.deployment_storage.check_buffer(_file.buffer)) {
-					DATA.deployment_storage.add(_file.buffer, _name);
-					_message = @'New version "'+ _name + @'" successfully uploaded';
+					var _deployment_id = DATA.deployment_storage.add(_file.buffer, _name);
+					DATA.deployment_manager.deploy(_deployment_id, DATA.deployment_storage.get_path(_deployment_id));
+
+					_message = @'New version "'+ _name + @'" successfully uploaded and deployed';
 				}
 				else {
 					_message = "Error: file was not an AppImage";	

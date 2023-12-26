@@ -105,7 +105,9 @@ function HttpServerRequestContext(_request, _response=undefined, _logger=undefin
 	}
 	
 	static __set_session_cookie = function(_session_id, _max_age) {
-		self.response.set_cookie(self.session_cookie_name, _session_id, {max_age: _max_age, same_site: "Strict", http_only: true});
+		if (!is_undefined(self.response)) {
+			self.response.set_cookie(self.session_cookie_name, _session_id, {max_age: _max_age, same_site: "Strict", http_only: true});
+		}
 	}
 	
 	/** Generates a UUID4 */

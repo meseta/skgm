@@ -101,9 +101,10 @@ function HttpServer(_port, _logger=undefined) constructor {
 	
 	/** Add a constructor with a render to the router
 	 * @param {Function|Struct.HttpServerRenderBase} _render
+	 * @param {Bool} _websocket whether this handles websockets
 	 * @return {Struct.HttpServer}
 	 */
-	static add_render = function(_render) {
+	static add_render = function(_render, _websocket=false) {
 		var _inst = is_struct(_render) && !is_method(_render) ? _render : new _render();
 		if (!is_method(_inst[$ "handler"])) {
 			throw new ExceptionHttpServerSetup("Render does not have a handler method");
@@ -114,13 +115,13 @@ function HttpServer(_port, _logger=undefined) constructor {
 		
 		var _bound_handler = method(_inst, _inst.handler);
 		if (is_string(_inst[$ "path"])) {
-			self.logger.info("Added render", {path: _inst.path})
-			self.__router.add_path(_inst.path, _bound_handler);
+			self.logger.info("Added render", {path: _inst.path, websocket: _websocket})
+			self.__router.add_path(_inst.path, _bound_handler, _websocket);
 		}
 		if (is_array(_inst[$ "paths"])) {
-			array_foreach(_inst.paths, method({this: other, bound_handler: _bound_handler}, function(_path) {
-				this.__logger.info("Added render", {path: _path})
-				this.__router.add_path(_path, bound_handler);
+			array_foreach(_inst.paths, method({this: other, bound_handler: _bound_handler, websocket: _websocket}, function(_path) {
+				this.__logger.info("Added render", {path: _path, websocket: websocket})
+				this.__router.add_path(_path, bound_handler, websocket);
 			}));
 		}
 		return self;

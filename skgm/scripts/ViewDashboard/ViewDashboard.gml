@@ -5,6 +5,8 @@ function ViewDashboard(): HtmxView() constructor {
 	static no_session_redirect_path = "not-logged-in";
 	static should_cache = false;
 	
+	static output_log_id = self.auto_id("output-log");
+	
 	static render = function(_context) {
 		if (_context.request.get_query("action") == "restart") {
 			self.hx_replace_url(_context, self.path);
@@ -25,15 +27,45 @@ function ViewDashboard(): HtmxView() constructor {
 		var _deployment = DATA.deployment_storage.get(_current_id);
 		
 		if (!is_undefined(_deployment)) {
-			var _output = DATA.deployment_manager.get_output();
+			//var _output = DATA.deployment_manager.get_output();
+			// '+ string_join_ext("\n", _output) + @'
+			// 
+			// 				<script>
+				//	let obj = document.getElementById("output-log");
+				//	obj.scrollTop = obj.scrollHeight;
+				//</script>
+			//
+			//
 			_render += @'
 				<p style="text-align: center;" class="secondary">
 					<strong>'+ _deployment.name +@'</strong><br /> Creation date: <span class="secondary">'+ date_datetime_string(_deployment.created) +@'</span>
 				</p>
-				<pre id="output-log" style="max-height: 300px; overflow-y: auto; overflow-x: auto;">'+ string_join_ext("\n", _output) + @'</pre>
+				
+				<style>
+					#'+self.output_log_id+@' {
+						height: 300px;
+						overflow-y: auto;
+						overflow-x: auto;
+						padding: 4px;"
+					}
+				</style>
+				<div hx-ext="ws" ws-connect="/'+WebsocketDashboardLogs.path+@'">
+					<pre id="'+self.output_log_id+@'">Loading...</pre>
+				</div>
 				<script>
-					let obj = document.getElementById("output-log");
-					obj.scrollTop = obj.scrollHeight;
+					var logScrollSnapped = true;
+					document.body.addEventListener("htmx:wsBeforeMessage", function() {
+						let el = document.getElementById("'+self.output_log_id+@'");
+						if (el) {
+							logScrollSnapped = el.scrollHeight - el.clientHeight <= el.scrollTop + 1;
+						}
+					});
+					document.body.addEventListener("htmx:wsAfterMessage", function() {
+						let el = document.getElementById("'+self.output_log_id+@'");
+						if (el && logScrollSnapped) {
+							el.scrollTop = el.scrollHeight;
+						}
+					});
 				</script>
 				
 				<footer style="text-align: right;">
