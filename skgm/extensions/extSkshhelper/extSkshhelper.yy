@@ -22,6 +22,7 @@
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"extSkshhelper_open","argCount":0,"args":[
             1,
             1,
+            1,
           ],"documentation":"","externalName":"sk_open","help":"","hidden":false,"kind":4,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"extSkshhelper_is_open","argCount":0,"args":[
             1,

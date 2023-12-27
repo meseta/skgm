@@ -59,7 +59,7 @@ function DeploymentManager() constructor {
 	static restart = function() {
 		if (self.__deployment_id != "") {
 			Skshhelper.close(self.__deployment_id);
-			Skshhelper.open(self.__path, self.__deployment_id);
+			Skshhelper.open(self.__path, self.__deployment_id, DATA.settings.get("display"));
 			self.__output_buffer = [];
 			
 			// clear out the lines

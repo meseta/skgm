@@ -1,7 +1,7 @@
 function Skshhelper() constructor {
-	static open = function(_file, _id) {
+	static open = function(_file, _id, _display) {
 		if (os_type == os_linux) {
-			return !!extSkshhelper_open(_file, _id);
+			return !!extSkshhelper_open(_file, _id, _display);
 		}
 		return false;
 	}

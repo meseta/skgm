@@ -10,9 +10,9 @@ char line_buffer[BUFSIZE] = {0};
 char skshhelper_prefix[] = "/tmp/skshhelper-";
 FILE *fp;
 
-double sk_open(char* path, char* id) {
+double sk_open(char* path, char* id, char* display) {
   char cmd[CMDSIZE] = {0};
-  snprintf(cmd, CMDSIZE, "chmod 744 %1$s; ln -sf %1$s %2$s%3$s; %2$s%3$s --appimage-extract-and-run", path, skshhelper_prefix, id);
+  snprintf(cmd, CMDSIZE, "chmod 744 %1$s; ln -sf %1$s %2$s%3$s; DISPLAY=%4$s %2$s%3$s --appimage-extract-and-run", path, skshhelper_prefix, id, display);
 
   printf("skshhelper opening path %s\n", path);
   fp = popen(cmd, "r");
