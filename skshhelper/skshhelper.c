@@ -12,7 +12,7 @@ FILE *fp;
 
 double sk_open(char* path, char* id) {
   char cmd[CMDSIZE] = {0};
-  snprintf(cmd, CMDSIZE, "chmod +x %1$s; ln -sf %1$s %2$s%3$s; %2$s%3$s --appimage-extract-and-run", path, skshhelper_prefix, id);
+  snprintf(cmd, CMDSIZE, "chmod 744 %1$s; ln -sf %1$s %2$s%3$s; %2$s%3$s --appimage-extract-and-run", path, skshhelper_prefix, id);
 
   printf("skshhelper opening path %s\n", path);
   fp = popen(cmd, "r");
