@@ -2,11 +2,22 @@ function Password(_password_file_location="password") constructor {
 	self.__password_file_location = _password_file_location;
 	self.__password_hash = undefined;
 	
-	// try to load it
 	if (file_exists(self.__password_file_location)) {
+		// try to load it
 		var _buff = buffer_load(self.__password_file_location);
 		self.__password_hash = buffer_read(_buff, buffer_text);
 		buffer_delete(_buff);
+	}
+	else {
+		// try to read env
+		var _password = environment_get_variable("SKGM_PASSWORD");
+		if (_password != "") {
+			LOGGER.info("Using password from env");
+			self.set_password(_password);
+		}
+		else {
+			LOGGER.warning("No password found, user will be requested to create on on startup");	
+		}
 	}
 	
 	static has_password = function() {

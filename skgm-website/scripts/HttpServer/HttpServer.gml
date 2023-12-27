@@ -5,12 +5,12 @@
 function HttpServer(_port, _logger=undefined) constructor {
 	self.port = _port;
 	
-	/* @ignore */ self.__logger = _logger ?? new Logger("HttpServer", {port: _port});
+	/* @ignore */ self.logger = _logger ?? new Logger("HttpServer", {port: _port});
 	
 	/* @ignore */ self.__socket = -1;
 	/* @ignore */ self.__bound_handler = method(self, self.__async_networking_handler);
 	/* @ignore */ self.__client_sessions = {};
-	/* @ignore */ self.__router = new HttpServerRouter(self.__logger);
+	/* @ignore */ self.__router = new HttpServerRouter(self.logger);
 	
 	/** Start the server, returning whether successful
 	 * @return {Bool}
@@ -18,14 +18,14 @@ function HttpServer(_port, _logger=undefined) constructor {
 	static start = function() {
 		// can't start if already has a socket
 		if (self.__socket != -1) {
-			self.__logger.warning("Can't start server, already started");
+			self.logger.warning("Can't start server, already started");
 			return false;
 		}
 		
-		self.__logger.info("Starting server");
+		self.logger.info("Starting server");
 		self.__socket = network_create_server_raw(network_socket_tcp, self.port, 20);
 		if (self.__socket == -1) {
-			self.__logger.error("Server port not available");
+			self.logger.error("Server port not available");
 			return false;
 		}
 		
@@ -57,7 +57,7 @@ function HttpServer(_port, _logger=undefined) constructor {
 	 * @return {Struct.HttpServer}
 	 */
 	static add_path = function(_path, _callback) {
-		self.__logger.info("Added path", {path: _path});
+		self.logger.info("Added path", {path: _path});
 		self.__router.add_path(_path, _callback);
 		return self;
 	};
@@ -68,7 +68,7 @@ function HttpServer(_port, _logger=undefined) constructor {
 	 * @return {Struct.HttpServer}
 	 */
 	static add_file = function(_path, _file) {
-		self.__logger.info("Added file", {path: _path});
+		self.logger.info("Added file", {path: _path});
 		var _file_handler = new HttpServerFile(_file);
 		self.__router.add_path(_path, method(_file_handler, _file_handler.handler));
 		return self;
@@ -81,7 +81,7 @@ function HttpServer(_port, _logger=undefined) constructor {
 	 * @return {Struct.HttpServer}
 	 */
 	static add_file_server = function(_path, _web_root, _index_file="index.html") {
-		self.__logger.info("Added file server", {path: _path});
+		self.logger.info("Added file server", {path: _path});
 		var _file_handler = new HttpServerFileServer(_web_root, _index_file);
 		self.__router.add_path(_path, method(_file_handler, _file_handler.handler));
 		return self;
@@ -93,7 +93,7 @@ function HttpServer(_port, _logger=undefined) constructor {
 	 * @return {Struct.HttpServer}
 	 */
 	static add_sprite_server = function(_path, _parameter_name="image_name") {
-		self.__logger.info("Added sprite server", {path: _path});
+		self.logger.info("Added sprite server", {path: _path});
 		var _sprite_handler = new HttpServerSpriteServer(_parameter_name);
 		self.__router.add_path(_path, method(_sprite_handler, _sprite_handler.handler));
 		return self;
@@ -101,9 +101,10 @@ function HttpServer(_port, _logger=undefined) constructor {
 	
 	/** Add a constructor with a render to the router
 	 * @param {Function|Struct.HttpServerRenderBase} _render
+	 * @param {Bool} _websocket whether this handles websockets
 	 * @return {Struct.HttpServer}
 	 */
-	static add_render = function(_render) {
+	static add_render = function(_render, _websocket=false) {
 		var _inst = is_struct(_render) && !is_method(_render) ? _render : new _render();
 		if (!is_method(_inst[$ "handler"])) {
 			throw new ExceptionHttpServerSetup("Render does not have a handler method");
@@ -114,13 +115,13 @@ function HttpServer(_port, _logger=undefined) constructor {
 		
 		var _bound_handler = method(_inst, _inst.handler);
 		if (is_string(_inst[$ "path"])) {
-			self.__logger.info("Added render", {path: _inst.path})
-			self.__router.add_path(_inst.path, _bound_handler);
+			self.logger.info("Added render", {path: _inst.path, websocket: _websocket})
+			self.__router.add_path(_inst.path, _bound_handler, _websocket);
 		}
 		if (is_array(_inst[$ "paths"])) {
-			array_foreach(_inst.paths, method({this: other, bound_handler: _bound_handler}, function(_path) {
-				this.__logger.info("Added render", {path: _path})
-				this.__router.add_path(_path, bound_handler);
+			array_foreach(_inst.paths, method({this: other, bound_handler: _bound_handler, websocket: _websocket}, function(_path) {
+				this.__logger.info("Added render", {path: _path, websocket: websocket})
+				this.__router.add_path(_path, bound_handler, websocket);
 			}));
 		}
 		return self;
@@ -143,7 +144,7 @@ function HttpServer(_port, _logger=undefined) constructor {
 	 * @return {Struct.HttpServer}
 	 */
 	static add_websocket = function(_path, _callback) {
-		self.__logger.info("Added websocket", {path: _path});
+		self.logger.info("Added websocket", {path: _path});
 		self.__router.add_path(_path, _callback, true);
 		return self;
 	};
@@ -193,8 +194,8 @@ function HttpServer(_port, _logger=undefined) constructor {
 	 * @ignore
 	 */
 	static __handle_connect = function(_client_socket, _ip) {
-		self.__logger.debug("Client connected", {socket_id: _client_socket, ip: _ip})  
-		var _child_logger = self.__logger.bind({socket_id: _client_socket, ip: _ip});
+		self.logger.debug("Client connected", {socket_id: _client_socket, ip: _ip})  
+		var _child_logger = self.logger.bind({socket_id: _client_socket, ip: _ip});
 		self.__client_sessions[$ _client_socket] = new HttpServerSession(_client_socket, self.__router, _child_logger);
 	};
 	
@@ -203,7 +204,7 @@ function HttpServer(_port, _logger=undefined) constructor {
 	 * @ignore
 	 */
 	static __handle_disconnect = function(_client_socket) {
-		self.__logger.debug("Client disconnected", {socket_id: _client_socket}) 
+		self.logger.debug("Client disconnected", {socket_id: _client_socket}) 
 		var _client_session = self.__client_sessions[$ _client_socket];
 		if (!is_undefined(_client_session)) {
 			_client_session.close();
@@ -247,8 +248,11 @@ function HttpServer(_port, _logger=undefined) constructor {
 				if (_char1 >= 48 && _char1 <= 57) {
 					_code += (_char1-48) << 4;	
 				}
+				else if (_char1 >= 65 && _char1 <= 90) {
+					_code += (_char1-55) << 4;	
+				}
 				else if (_char1 >= 97 && _char1 <= 102) {
-					_code += (_char-87) << 4;	
+					_code += (_char1-87) << 4;	
 				}
 				else {
 					_decoded += "%"+_part;
@@ -258,6 +262,9 @@ function HttpServer(_port, _logger=undefined) constructor {
 				var _char2 = ord(string_char_at(_part, 2));
 				if (_char2 >= 48 && _char2 <= 57) {
 					_code += (_char2-48);	
+				}
+				else if (_char2 >= 65 && _char2 <= 90) {
+					_code += (_char2-55);	
 				}
 				else if (_char2 >= 97 && _char2 <= 102) {
 					_code += (_char2-87);	

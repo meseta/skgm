@@ -1,8 +1,8 @@
 FROM meseta/gmrunner_base:v1.1.0
 
 WORKDIR /workdir
-COPY skgm.AppImage .
-RUN chmod +x skgm.AppImage
+COPY skgm.AppImage entrypoint.sh ./
+RUN chmod +x skgm.AppImage entrypoint.sh
 
 EXPOSE 5000
 

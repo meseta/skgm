@@ -23,8 +23,12 @@ function ViewMain(): HtmxView() constructor {
 				<style>
 					@media (min-width: 992px) {
 					    .grid-nav {
-					        grid-template-columns: 1fr 3fr;
+					        grid-template-columns: 3fr 9fr;
+							column-gap: 3em;
 					    }
+					}
+					#'+self.content_id+@' > article:first-of-type, #'+self.content_id+@' > form:first-of-type article {
+						margin-top: 0;
 					}
 			    </style>
 				

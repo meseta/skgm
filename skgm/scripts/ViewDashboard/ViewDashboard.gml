@@ -26,18 +26,11 @@ function ViewDashboard(): HtmxView() constructor {
 		var _deployment = DATA.deployment_storage.get(_current_id);
 		
 		if (!is_undefined(_deployment)) {
-			//var _output = DATA.deployment_manager.get_output();
-			// '+ string_join_ext("\n", _output) + @'
-			// 
-			// 				<script>
-				//	let obj = document.getElementById("output-log");
-				//	obj.scrollTop = obj.scrollHeight;
-				//</script>
-			//
-			//
 			_render += @'
 				<p style="text-align: center;" class="secondary">
-					<strong>'+ _deployment.name +@'</strong><br /> Creation date: <span class="secondary">'+ date_datetime_string(_deployment.created) +@'</span>
+					<strong>'+ _deployment.name +@'</strong><br />
+					Creation date: <span class="secondary">'+ date_datetime_string(_deployment.created) +@'</span><br />
+					<mark>'+ (DATA.deployment_manager.is_open() ? "Running" : "Not Running") +@'</mark>
 				</p>
 				
 				<style>

@@ -6,8 +6,8 @@ function HttpRequest(_method, _path) constructor {
 	
 	// request content
 	self.method = _method;
-	self.path = _path;
-	self.path_original = _path;
+	self.path = HttpServer.url_decode(_path);
+	self.path_original = self.path;
 	self.query = {};
 	
 	// header content

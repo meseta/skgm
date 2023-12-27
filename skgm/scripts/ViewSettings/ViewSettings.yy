@@ -1,7 +1,7 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "ViewSentry",
+  "name": "ViewSettings",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {

@@ -38,21 +38,21 @@ function ViewSetPassword(): HtmxView() constructor {
 		
 		return @'
 			<title>Set Password</title>
+			<form hx-boost="true" hx-target="#'+ self.modal_id +@'" hx-swap="outerHTML" action="/'+ self.path +@'" method="POST">
 			<article id="'+ self.modal_id +@'" style="text-align: center; margin: 0px auto; max-width: 400px;">
 				<header>
 					<h1 style="margin-bottom: 0;">Set Admin Password</h1>
 				</header>
-				<form hx-boost="true" hx-target="#'+ self.modal_id +@'" hx-swap="outerHTML" action="/'+ self.path +@'" method="POST">
-					<p>'+ (is_string(_validation.message) ?  $"<mark>{_validation.message}</mark>" : "") + @'</p>
+				<p>'+ (is_string(_validation.message) ?  $"<mark>{_validation.message}</mark>" : "") + @'</p>
 					
-					'+ (_validation.success != true
-						? @'<input type="password" name="password" placeholder="Admin Password" aria-label="Admin Password" required>
-							<input type="password" name="password_confirm" placeholder="Confirm Password" aria-labe="Confirm Password" required>
-							<button type="submit">Set Admin Password</button>'
-						: @'<a href="/'+ViewLogIn.path+@'">Click here to log in</a>'
-					) + @'
-				</form>
+				'+ (_validation.success != true
+					? @'<input type="password" name="password" placeholder="Admin Password" aria-label="Admin Password" required>
+						<input type="password" name="password_confirm" placeholder="Confirm Password" aria-labe="Confirm Password" required>
+						<button type="submit">Set Admin Password</button>'
+					: @'<a href="/'+ViewLogIn.path+@'">Click here to log in</a>'
+				) + @'
 			</article>
+			</form>
 		';
 	};
 	

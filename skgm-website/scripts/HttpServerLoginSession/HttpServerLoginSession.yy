@@ -1,14 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "ViewMain",
+  "name": "HttpServerLoginSession",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Main",
-    "path": "folders/Website/Main.yy",
+    "name": "HttpServer",
+    "path": "folders/HTGM/HttpServer.yy",
   },
-  "tags": [
-    "http_view",
-  ],
 }

@@ -38,7 +38,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 			context: _context,
 		}).chain_callback(function(_rendered) {
 			// try to figure out title from our content
-			var _title = self.__find_title(_rendered.route)
+			var _website_name = string(DATA.settings.get("website_name"));
 			
 			/// Feather ignore once GM1009
 			return @'
@@ -46,7 +46,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 				<html data-theme="light" lang="en"style="height: 100%">
 				<head>
 					<meta charset="utf-8">
-					<title>'+ (_title ?? "ServerKit GameMaker") +@'</title>
+					<title>'+ (self.__find_title(_rendered.route) ?? _website_name) +@'</title>
 					<link rel="icon" type="image/png" href="/images/sFavicon.png">
 					<meta name="viewport" content="width=device-width, initial-scale=1">
 					<link rel="stylesheet" href="/static/pico/pico.min.css">
@@ -54,19 +54,19 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 					
 					<script src="/static/htmx/htmx.min.js"></script>
 					<script src="/static/htmx/ext_ws.min.js"></script>
-				a
+				
 					'+ (struct_exists(_rendered.context.data, "redirect") ? $"<meta http-equiv='Refresh' content='0; URL={_rendered.context.data.redirect}' />" : "") +@'
 					
 					<meta name="description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
 					<meta name="theme-color" content="#76428a" />
 
 					<meta property="og:type" content="website" />
-					<meta property="og:title" content="ServerKit GameMaker" />
+					<meta property="og:title" content="'+ _website_name +@'" />
 					<meta property="og:description" content="An open source control panel to allow easy updating and administration of GameMaker servers."
 					<meta property="og:image" content="https://skgm.meseta.dev/static/opengraph.png" />
 
 					<meta property="twitter:card" content="summary_large_image" />
-					<meta property="twitter:title" content="ServerKit GameMaker" />
+					<meta property="twitter:title" content="'+ _website_name +@'" />
 					<meta property="twitter:description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
 					<meta property="twitter:image" content="https://sk.meseta.dev/static/opengraph.png" />
 				</head>

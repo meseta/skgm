@@ -12,9 +12,9 @@ FILE *fp;
 
 double sk_open(char* path, char* id) {
   char cmd[CMDSIZE] = {0};
-  snprintf(cmd, CMDSIZE, "chmod +x %1$s; ln -sf %1$s %2$s%3$s; DISPLAY=:1 %2$s%3$s", path, skshhelper_prefix, id);
+  snprintf(cmd, CMDSIZE, "chmod +x %1$s; ln -sf %1$s %2$s%3$s; %2$s%3$s --appimage-extract-and-run", path, skshhelper_prefix, id);
 
-  printf("skshhelper: running %s\n", cmd);
+  printf("skshhelper opening path %s\n", path);
   fp = popen(cmd, "r");
   if (fp == NULL) {
     printf("skshhelper: Error opening command\n");
@@ -36,7 +36,7 @@ double sk_is_open(char* id) {
 
   char cmd[CMDSIZE] = {0};
   snprintf(cmd, CMDSIZE, "pgrep -f %s%s | wc -l", skshhelper_prefix, id);
-  printf("skshhelper: running %s\n", cmd);
+  printf("skshhelper checking is_open %s\n", id);
 
   FILE *fp_check = popen(cmd, "r");
   if (fp_check == NULL) {
@@ -49,7 +49,6 @@ double sk_is_open(char* id) {
   fgets(check_buffer, CMDSIZE, fp_check);
   pclose(fp_check);
 
-  printf("skshhelper: Got value %d\n", atoi(check_buffer));
   return atoi(check_buffer) > 0 ? 1. : 0.;
 }
 
@@ -65,7 +64,7 @@ char* sk_read() {
 double sk_close(char* id) {
   char cmd[CMDSIZE] = {0};
   snprintf(cmd, CMDSIZE, "pkill -f %s%s", skshhelper_prefix, id);
-  printf("skshhelper: running %s\n", cmd);
+  printf("skshhelper closing %s\n", id);
   system(cmd);
   return 0.;
 }
@@ -73,6 +72,7 @@ double sk_close(char* id) {
 double sk_close_all() {
   char cmd[CMDSIZE] = {0};
   snprintf(cmd, CMDSIZE, "pkill -f %s", skshhelper_prefix);
+  printf("skshhelper closing all\n");
   system(cmd);
   return 0.;
 }

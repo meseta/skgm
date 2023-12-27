@@ -1,14 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "ViewMain",
+  "name": "scrSanitize",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Main",
-    "path": "folders/Website/Main.yy",
+    "name": "Html",
+    "path": "folders/HTGM/Html.yy",
   },
-  "tags": [
-    "http_view",
-  ],
 }

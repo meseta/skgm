@@ -3,7 +3,7 @@ function ComponentMainNavigation(): HtmlComponent() constructor {
 		static _links = [
 			new ComponentNavigationLink(ViewMain.content_id, ViewDashboard.path, "Dashboard", ViewMain.path),
 			new ComponentNavigationLink(ViewMain.content_id, ViewDeploy.path, "Manage Deployments"),
-			new ComponentNavigationLink(ViewMain.content_id, ViewSentry.path, "Sentry"),
+			new ComponentNavigationLink(ViewMain.content_id, ViewSettings.path, "SKGM Settings"),
 		];
 	
 		return @'

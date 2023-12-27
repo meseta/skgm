@@ -1,4 +1,4 @@
-/* DB32 Purple Light scheme (Default) */
+/* DB32 Blue Light scheme (Default) */
 /* Can be forced with data-theme="light" */
 [data-theme="light"],
 :root:not([data-theme="dark"]) {
@@ -8,7 +8,7 @@
   --primary-inverse: #FFF;
 }
 
-/* DB32 Purple Dark scheme (Auto) */
+/* DB32 Blue Dark scheme (Auto) */
 /* Automatically enabled if user has Dark mode enabled */
 @media only screen and (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
@@ -19,7 +19,7 @@
   }
 }
 
-/* DB32 Purple Dark scheme (Forced) */
+/* DB32 Blue Dark scheme (Forced) */
 /* Enabled if forced with data-theme="dark" */
 [data-theme="dark"] {
   --primary: #3f3f74;
@@ -28,7 +28,7 @@
   --primary-inverse: #FFF;
 }
 
-/* Purple (Common styles) */
+/* Blue (Common styles) */
 :root {
   --form-element-active-border-color: var(--primary);
   --form-element-focus-color: var(--primary-focus);

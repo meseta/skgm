@@ -6,14 +6,15 @@ function HttpRequest(_method, _path) constructor {
 	
 	// request content
 	self.method = _method;
-	self.path = _path;
-	self.path_original = _path;
+	self.path = HttpServer.url_decode(_path);
+	self.path_original = self.path;
 	self.query = {};
 	
 	// header content
 	self.keep_alive = true;
 	self.headers = {};
 	self.parameters = {};
+	self.cookies = {};
 	
 	// body content
 	self.data = -1;
@@ -104,7 +105,31 @@ function HttpRequest(_method, _path) constructor {
 	 */
 	static set_header = function(_key, _value) {
 		self.headers[$ string_lower(_key)] = string(_value);
+		
+		// additionally decode cookies
+		if (string_lower(_key) == "cookie") {
+			var _cookies = self.__decode_header_values(_value);
+			struct_foreach(_cookies, function(_cookie_name, _cookie_value) {
+				HttpServer.struct_set_multiple(self.cookies, _cookie_name, _cookie_value);	
+			})
+		}
 		return self;
+	};
+	
+	/** Checks if a cookie exists
+	 * @param {String} _name name of the cookie
+	 * @return {Bool}
+	 */
+	static has_cookie = function(_name) {
+		return struct_exists(self.cookies, _name);
+	};
+	
+	/** Gets a cookie, returning either string or undefined
+	 * @param {String} _name the name of the cookie to get
+	 * @return {String|Array<String>|Undefined}
+	 */
+	static get_cookie = function(_name) {
+		return self.cookies[$ _name];
 	};
 	
 	/** Gets whether a parameter exists
@@ -298,8 +323,11 @@ function HttpRequest(_method, _path) constructor {
 				
 					if (is_undefined(_filename) && is_undefined(_content_type)) {
 						// probably just form data.
-						var _value = buffer_read(_content_buff, buffer_text);
-						buffer_delete(_content_buff);
+						var _value = "";
+						if (buffer_exists(_content_buff)) { // buffer can be non-existent for blank strings
+							_value = buffer_read(_content_buff, buffer_text);
+							buffer_delete(_content_buff);
+						}
 						HttpServer.struct_set_multiple(self.form, _name, _value);
 					}
 					else {

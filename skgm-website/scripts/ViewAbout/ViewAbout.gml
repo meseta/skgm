@@ -9,8 +9,8 @@ function ViewAbout(): HtmxView() constructor {
 			<h2>About ServerKit GameMaker</h2>
 			<p>
 				<strong>ServerKit GameMaker</strong> is an open source control panel to allow easy drag & drop updating and administration
-				of GameMaker servers servers, and server administration. For example, the <a href="https://skgm.meseta.dev">SKGM Website</a>
-				is controlled and aministrated by ServerKit.
+				of GameMaker servers, and server administration. For example, the <a href="https://skgm.meseta.dev">SKGM Website</a>
+				is controlled and administrated by ServerKit.
 			</p>
 			<p>
 				<strong>SKGM</strong> uses the <a href="https://htgm.meseta.dev">HTGM web framework</a>, and is inspired by server

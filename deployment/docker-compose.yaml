@@ -1,8 +1,9 @@
 services:
-  # SKGM manual site
-  skgm:
+  build:
+    image: meseta/skgm:v1.0.0
     build:
       context: .
       dockerfile: Dockerfile
     ports:
+      - "5001:5001"
       - "5000:5000"
