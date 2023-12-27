@@ -95,7 +95,7 @@ function DeploymentManager() constructor {
 			if (_line == "") {
 				break;	
 			}
-			var _filtered_line = string_trim_end(string_replace_all(string_replace_all(_line, "<", "&lt;"), ">", "&gt;"))
+			var _filtered_line = string_trim_end(sanitize_tags(_line))
 			// filter line
 			array_push(self.__output_buffer, _filtered_line);
 			array_push(_lines, _filtered_line);

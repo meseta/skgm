@@ -27,6 +27,6 @@ function Password(_password_file_location="password") constructor {
 	}
 	
 	static __hash_password = function(_password) {
-		return sha1_string_utf8(_password);	
+		return sha1_string_utf8(_password);
 	}
 }

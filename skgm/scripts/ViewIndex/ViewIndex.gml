@@ -19,7 +19,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 				return ViewSetPassword.render(_context);
 			}
 			else {
-				return ViewLog_In.render(_context);
+				return ViewLogIn.render(_context);
 			}
 		}
 	};
@@ -54,7 +54,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 					
 					<script src="/static/htmx/htmx.min.js"></script>
 					<script src="/static/htmx/ext_ws.min.js"></script>
-					
+				a
 					'+ (struct_exists(_rendered.context.data, "redirect") ? $"<meta http-equiv='Refresh' content='0; URL={_rendered.context.data.redirect}' />" : "") +@'
 					
 					<meta name="description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />

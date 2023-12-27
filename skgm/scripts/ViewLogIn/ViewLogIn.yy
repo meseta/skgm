@@ -1,12 +1,12 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "ViewSetPassword",
+  "name": "ViewLogIn",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Pages",
-    "path": "folders/Website/Pages.yy",
+    "name": "Auth",
+    "path": "folders/Website/Pages/Auth.yy",
   },
   "tags": [
     "http_view",

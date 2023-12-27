@@ -11,7 +11,7 @@ function ViewNotLoggedIn(): HtmxView() constructor {
 				<header>
 					<h1 style="margin-bottom: 0;">You are not logged in</h1>
 				</header>
-				<p>You must be logged in to view this page. <a href="/'+ ViewLog_In.path + @'">click here to log in</a>.</p>
+				<p>You must be logged in to view this page. <a href="/'+ ViewLogIn.path + @'">click here to log in</a>.</p>
 			</article>
 		';
 	}

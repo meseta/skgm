@@ -79,6 +79,7 @@ function HttpServerRequestContext(_request, _response=undefined, _logger=undefin
 		self.session_storage[$ _session_id] = self.session;
 		self.__set_session_cookie(_session_id, _expires_seconds);
 		self.logger.info("Session started", {session_id: _session_id});
+		return _session_id;
 	}
 	
 	/** Extends the session

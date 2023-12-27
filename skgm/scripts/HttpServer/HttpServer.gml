@@ -248,8 +248,11 @@ function HttpServer(_port, _logger=undefined) constructor {
 				if (_char1 >= 48 && _char1 <= 57) {
 					_code += (_char1-48) << 4;	
 				}
+				else if (_char1 >= 65 && _char1 <= 90) {
+					_code += (_char1-55) << 4;	
+				}
 				else if (_char1 >= 97 && _char1 <= 102) {
-					_code += (_char-87) << 4;	
+					_code += (_char1-87) << 4;	
 				}
 				else {
 					_decoded += "%"+_part;
@@ -259,6 +262,9 @@ function HttpServer(_port, _logger=undefined) constructor {
 				var _char2 = ord(string_char_at(_part, 2));
 				if (_char2 >= 48 && _char2 <= 57) {
 					_code += (_char2-48);	
+				}
+				else if (_char2 >= 65 && _char2 <= 90) {
+					_code += (_char2-55);	
 				}
 				else if (_char2 >= 97 && _char2 <= 102) {
 					_code += (_char2-87);	

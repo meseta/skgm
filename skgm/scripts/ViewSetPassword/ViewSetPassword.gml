@@ -31,6 +31,7 @@ function ViewSetPassword(): HtmxView() constructor {
 		var _validation = self.__validate_passwords(_context.request.get_form("password"), _context.request.get_form("password_confirm"));
 		
 		if (_validation.success == true) {
+			_context.logger.info("Updating password");
 			// password accepted
 			DATA.password.set_password(_context.request.get_form("password"));
 		}
@@ -48,7 +49,7 @@ function ViewSetPassword(): HtmxView() constructor {
 						? @'<input type="password" name="password" placeholder="Admin Password" aria-label="Admin Password" required>
 							<input type="password" name="password_confirm" placeholder="Confirm Password" aria-labe="Confirm Password" required>
 							<button type="submit">Set Admin Password</button>'
-						: @'<a href="/'+ViewLog_In.path+@'">Click here to log in</a>'
+						: @'<a href="/'+ViewLogIn.path+@'">Click here to log in</a>'
 					) + @'
 				</form>
 			</article>

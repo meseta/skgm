@@ -1,11 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "quote_fix",
+  "name": "Settings",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Html",
-    "path": "folders/HTGM/Html.yy",
+    "name": "Data Managers",
+    "path": "folders/Data Managers.yy",
   },
 }

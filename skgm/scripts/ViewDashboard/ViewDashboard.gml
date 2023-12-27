@@ -9,14 +9,13 @@ function ViewDashboard(): HtmxView() constructor {
 	
 	static render = function(_context) {
 		if (_context.request.get_query("action") == "restart") {
+			_context.logger.info("Restarting deployment");
 			self.hx_replace_url(_context, self.path);
 			DATA.deployment_manager.restart();
 		}
 			
 		var _render = @'
 			<title>Dashboard</title>
-			<h1>Dashboard</h1>
-			
 			<article>
 				<header>
 					<h2 style="margin-bottom: 0;">Current Deployment</h2>

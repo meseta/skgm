@@ -5,7 +5,7 @@ Links:
 * [GitHub](https://github.com/meseta/skgm)
 * [Download](https://github.com/meseta/skgm/releases)
 
-ServerKit GameMaker is an open source control panel to allow easy drag & drop updating and administration of GameMaker servers servers, and server administration. For example, the [SKGM Website](https://skgm.meseta.dev) is controlled and aministrated by ServerKit.
+ServerKit GameMaker is an open source control panel to allow easy drag & drop updating and administration of GameMaker servers, and server administration. For example, the [SKGM Website](https://skgm.meseta.dev) is controlled and aministrated by ServerKit.
 
 SKGM uses the [HTGM web framework](https://htgm.meseta.dev), and is inspired by server administration tools like cPanel.
 

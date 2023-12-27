@@ -1,14 +1,11 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "ViewSetPassword",
+  "name": "scrSanitize",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Pages",
-    "path": "folders/Website/Pages.yy",
+    "name": "Html",
+    "path": "folders/HTGM/Html.yy",
   },
-  "tags": [
-    "http_view",
-  ],
 }

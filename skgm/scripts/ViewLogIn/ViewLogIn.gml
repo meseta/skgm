@@ -1,4 +1,4 @@
-function ViewLog_In(): HtmxView() constructor {
+function ViewLogIn(): HtmxView() constructor {
 	// View setup
 	static path = "login";
 	static redirect_path = "";
@@ -11,13 +11,17 @@ function ViewLog_In(): HtmxView() constructor {
 		
 		if (_validation.success == true) {
 			// password accepted
-			_context.start_session();
+			var _session_id = _context.start_session();
+			_context.logger.info("User logged in", {session_id: _session_id});
 			
 			// get HX to redirect
 			self.hx_redirect(_context, ViewMain.path)
 			
 			// fallback, use redirect facility inside ViewMain
 			_context.data.redirect = ViewMain.path;
+		}
+		else if (_validation.success == false) {
+			_context.logger.warning("Login failure", {message: _validation.message});
 		}
 
 		return @'

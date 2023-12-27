@@ -15,6 +15,7 @@ function ViewDeploy(): HtmxView() constructor {
 			if (_name == "") {
 				_name = "Deployment";
 			}
+			_context.logger.info("Uploading new deployment", {name: _name});
 		
 			if (!is_undefined(_file)) {
 				if (DATA.deployment_storage.check_buffer(_file.buffer)) {
@@ -27,9 +28,11 @@ function ViewDeploy(): HtmxView() constructor {
 					_message = "Error: file was not an AppImage";	
 				}
 			}
+			_context.logger.info("Upload deployment result", {message: _message});
 		}
 		else if (_context.request.get_query("action") == "delete") {
 			var _deployment_id = _context.request.get_query("deployment_id");
+			_context.logger.info("Deleting deployment", {deployment_id: _deployment_id});
 			if (DATA.deployment_storage.has(_deployment_id)) {
 				var _deployment = DATA.deployment_storage.get(_deployment_id);
 				DATA.deployment_storage.remove(_deployment_id);
@@ -38,10 +41,12 @@ function ViewDeploy(): HtmxView() constructor {
 			else {
 				_message = "Deployment could not be found";
 			}
+			_context.logger.info("Delete deployment result", {message: _message});
 			self.hx_replace_url(_context, self.path);
 		}
 		else if (_context.request.get_query("action") == "deploy") {
 			var _deployment_id = _context.request.get_query("deployment_id");
+			_context.logger.info("Deploying deployment", {deployment_id: _deployment_id});
 			if (DATA.deployment_storage.has(_deployment_id)) {
 				var _deployment = DATA.deployment_storage.get(_deployment_id);
 				DATA.deployment_manager.deploy(_deployment_id, DATA.deployment_storage.get_path(_deployment_id));
@@ -50,19 +55,19 @@ function ViewDeploy(): HtmxView() constructor {
 			else {
 				_message = "Deployment could not be found";
 			}
+			_context.logger.info("Deploy deployment result", {message: _message});
 			self.hx_replace_url(_context, self.path);
 		}
 		
 		var _render = @'
 			<title>Manage Deployments</title>
-			<h1>Manage Deployments</h1>
 		';
 		
 		if (!is_undefined(_message)) {
 			_render += $"<p><mark>{_message}</mark></p>";
 		}
 		
-		_render += quote_fix(@'
+		_render += convert_backticks(@'
 			<form hx-boost="true" hx-target="#'+ ViewMain.content_id +@'" action="/'+ self.path +@'" method="POST" enctype="multipart/form-data">
 			<article>
 				<header>
@@ -85,7 +90,6 @@ function ViewDeploy(): HtmxView() constructor {
 			</article>
 			</form>
 		
-			
 			<article>
 				<header>
 					<h2 style="margin-bottom: 0;">Version history</h2>
