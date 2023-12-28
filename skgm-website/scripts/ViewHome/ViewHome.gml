@@ -2,7 +2,7 @@ function ViewHome(): HtmxView() constructor {
 	// View setup
 	static path = "home";
 	static redirect_path  = "";
-	static shoud_cache = true;
+	static should_cache = true;
 	
 	static render = function(_context) {
 		static cached = @'
@@ -18,15 +18,37 @@ function ViewHome(): HtmxView() constructor {
 			</section>
 			
 			<article>
-				<h2>Manage GameMaker Servers</h2>
-				<p>Drag-and-drop new builds to update your server</p>
-				
+				<div class="grid" style="column-gap: 3em; align-items:center">
+				<div>
+					<hgroup>
+						<h2>Deploy GameMaker Servers</h2>
+						<h3>Easily upload, deploy and manage new builds from a web interface</h3>
+					</hgroup>
+					<p>
+						SKGM allows you to upload GameMaker *.AppImage builds to your server
+						and run them from the web interface and monitor the server logs from
+						the dashboard, without needing to do any scripting or server administration
+					</p>
+				</div>
+				<img src="/static/docs/manage.png" alt="" />
+				</div>
 			</article>
 			
 			<article>
-				<h2>Host multiple servers on one server</h2>
-				<p>Run and operate multiple GameMaker servers</p>
-				
+				<div class="grid" style="column-gap: 3em; align-items:center">
+				<img src="/static/docs/version.png" alt="" />
+				<div>
+					<hgroup>
+						<h2>Manage Version</h2>
+						<h3>View past versions and roll back with a single click</h3>
+					</hgroup>
+					<p>
+						SKGM stores a history of your previous deployed versions, so if your new
+						build isn`t working, you can quickly roll back to a previous build with
+						a single click
+					</p>
+				</div>
+				</div>
 			</article>
 			
 			<section style="text-align: center;">

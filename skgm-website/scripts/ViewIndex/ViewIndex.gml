@@ -37,22 +37,21 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 					<link rel="stylesheet" href="/static/pico/theme.css">
 					
 					<script src="/static/htmx/htmx.min.js"></script>
-					<script src="/static/htmx/ext_ws.min.js"></script>
 					
 					<meta name="description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
 					<meta name="theme-color" content="#76428a" />
 
 					<meta property="og:type" content="website" />
 					<meta property="og:title" content="ServerKit GameMaker" />
-					<meta property="og:description" content="An open source control panel to allow easy updating and administration of GameMaker servers."
+					<meta property="og:description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
 					<meta property="og:image" content="https://skgm.meseta.dev/static/opengraph.png" />
 
 					<meta property="twitter:card" content="summary_large_image" />
 					<meta property="twitter:title" content="ServerKit GameMaker" />
 					<meta property="twitter:description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
-					<meta property="twitter:image" content="https://sk.meseta.dev/static/opengraph.png" />
+					<meta property="twitter:image" content="https://skgm.meseta.dev/static/opengraph.png" />
 				</head>
-				<body style="min-height: 100%; background-image: linear-gradient(180deg, transparent, #ffffff11); background-attachment: fixed;">
+				<body style="min-height: 100%; background-image: linear-gradient(180deg, transparent, #00000019); background-attachment: fixed;">
 					'+ _rendered.navigation +@'
 					<main class="container" id="'+self.content_id+@'">
 						'+ _rendered.route +@'

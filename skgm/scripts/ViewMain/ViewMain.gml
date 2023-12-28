@@ -2,6 +2,7 @@ function ViewMain(): HtmxView() constructor {
 	// View setup
 	static path = "main";
 	static redirect_path  = "";
+	static no_session_redirect_path = "not-logged-in";
 	
 	// Static properties
 	static content_id = self.auto_id("content");

@@ -2,18 +2,18 @@ function ViewAbout(): HtmxView() constructor {
 	// View setup
 	static path = "about";
 	static redirect_path  = "";
-	static shoud_cache = true;
+	static should_cache = true;
 	
 	static render = function(_context) {
 		static cached = @'
 			<h2>About ServerKit GameMaker</h2>
 			<p>
 				<strong>ServerKit GameMaker</strong> is an open source control panel to allow easy drag & drop updating and administration
-				of GameMaker servers, and server administration. For example, the <a href="https://skgm.meseta.dev">SKGM Website</a>
+				of GameMaker servers. For example, the <a href="https://skgm.meseta.dev">SKGM Website</a>
 				is controlled and administrated by ServerKit.
 			</p>
 			<p>
-				<strong>SKGM</strong> uses the <a href="https://htgm.meseta.dev">HTGM web framework</a>, and is inspired by server
+				<strong>SKGM</strong> is built in GameMaker using the <a href="https://htgm.meseta.dev">HTGM web framework</a>, and is inspired by server
 				administration tools like cPanel.
 			</p>
 			<p>

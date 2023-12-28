@@ -4,6 +4,7 @@
 function init_site(){
 	SERVER = new HttpServer(real(DATA.settings.get("port")), LOGGER);
 	SERVER.logger.set_level(Logger.INFO);
+	LOGGER.info("Starting SKGM", {version: GM_version})
 
 	// static file host
 	SERVER.add_file_server("static/*", "static");

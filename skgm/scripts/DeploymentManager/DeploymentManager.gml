@@ -44,7 +44,7 @@ function DeploymentManager() constructor {
 		// start new
 		self.__deployment_id = _deployment_id;
 		self.__path = _path;
-		Skshhelper.open(_path, _deployment_id);
+		Skshhelper.open(_path, _deployment_id, DATA.settings.get("display"));
 		
 		// launch the output collector
 		if (!is_undefined(self.__timer) && time_source_exists(self.__timer)) {

@@ -18,6 +18,7 @@
   ],
   "ResourceOrderSettings": [
     {"name":"oAsyncWrapperHttp","order":1,"path":"objects/oAsyncWrapperHttp/oAsyncWrapperHttp.yy",},
+    {"name":"ViewDocsInstalling","order":1,"path":"scripts/ViewDocsInstalling/ViewDocsInstalling.yy",},
     {"name":"HttpServerSpriteServer","order":13,"path":"scripts/HttpServerSpriteServer/HttpServerSpriteServer.yy",},
     {"name":"sLogo","order":1,"path":"sprites/sLogo/sLogo.yy",},
     {"name":"Logger","order":1,"path":"scripts/Logger/Logger.yy",},
@@ -46,8 +47,10 @@
     {"name":"scrSite","order":1,"path":"scripts/scrSite/scrSite.yy",},
     {"name":"MinHeap","order":2,"path":"scripts/MinHeap/MinHeap.yy",},
     {"name":"HttpServerWebsocketBase","order":15,"path":"scripts/HttpServerWebsocketBase/HttpServerWebsocketBase.yy",},
+    {"name":"ViewDocsEnvVars","order":3,"path":"scripts/ViewDocsEnvVars/ViewDocsEnvVars.yy",},
     {"name":"HttpServerRouter","order":11,"path":"scripts/HttpServerRouter/HttpServerRouter.yy",},
     {"name":"HttpServerLoginSession","order":8,"path":"scripts/HttpServerLoginSession/HttpServerLoginSession.yy",},
+    {"name":"ViewDocsDocker","order":2,"path":"scripts/ViewDocsDocker/ViewDocsDocker.yy",},
     {"name":"HtmlComponent","order":8,"path":"scripts/HtmlComponent/HtmlComponent.yy",},
     {"name":"dedent","order":6,"path":"scripts/dedent/dedent.yy",},
     {"name":"HttpRequestFile","order":2,"path":"scripts/HttpRequestFile/HttpRequestFile.yy",},

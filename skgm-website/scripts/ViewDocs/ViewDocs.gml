@@ -2,7 +2,7 @@ function ViewDocs(): HtmxView() constructor {
 	// View setup
 	static path = "docs";
 	static redirect_path  = "";
-	static shoud_cache = true;
+	static should_cache = true;
 	
 	// Static properties
 	static content_id = self.auto_id("content");
@@ -13,7 +13,7 @@ function ViewDocs(): HtmxView() constructor {
 	// Rendering dynamic routes
 	static render_route = function(_context) {
 		var _render = _context.pop_render_stack();
-		return is_method(_render) ? _render(_context) : ViewDocsDownloading.render(_context);
+		return is_method(_render) ? _render(_context) : ViewDocsManually.render(_context);
 	};
 	
 	static render = function(_context) {
@@ -25,7 +25,8 @@ function ViewDocs(): HtmxView() constructor {
 				<style>
 					@media (min-width: 992px) {
 					    .grid-nav {
-					        grid-template-columns: 1fr 3fr;
+					        grid-template-columns: 3fr 9fr;
+							column-gap: 3em;
 					    }
 					}
 			    </style>
