@@ -23,6 +23,13 @@ function DeploymentManager() constructor {
 		return self.__deployment_id != "" && Skshhelper.is_open(self.__deployment_id);
 	}
 	
+	/** Get whether the current deployment is open or not
+	 * @return {Bool}
+	 */
+	static is_crashed = function() {
+		return self.__deployment_id != "" && !Skshhelper.is_open(self.__deployment_id);
+	}
+	
 	/** Deploy a thing
 	 * @param {String} _deployment The deployment
 	 */
@@ -56,18 +63,20 @@ function DeploymentManager() constructor {
 	/** Restart the current deployment
 	 * @return {Bool}
 	 */
-	static restart = function() {
+	static restart = function(_clear_output=true) {
 		if (self.__deployment_id != "") {
 			Skshhelper.close(self.__deployment_id);
 			Skshhelper.open(self.__path, self.__deployment_id, DATA.settings.get("display"));
-			self.__output_buffer = [];
 			
-			// clear out the lines
-			array_foreach(self.__listeners, function(_listener) {
-				if (weak_ref_alive(_listener)) {
-					_listener.ref.push_lines([], true);	
-				}
-			})
+			if (_clear_output) {
+				self.__output_buffer = [];
+				// clear out the lines
+				array_foreach(self.__listeners, function(_listener) {
+					if (weak_ref_alive(_listener)) {
+						_listener.ref.push_lines([], true);	
+					}
+				});
+			}
 		}
 	}
 	
@@ -101,6 +110,16 @@ function DeploymentManager() constructor {
 			array_push(_lines, _filtered_line);
 		}
 		
+		// check if crashed
+		var _restart = false;
+		if (DATA.settings.get("auto_restart") && self.is_crashed()) {
+			var _message = "SKGM: crash detected, restarting";
+			array_push(self.__output_buffer, _message);
+			array_push(_lines, _message);
+			LOGGER.warning(_message);
+			_restart = true;
+		}
+		
 		// push to listeners
 		if (array_length(_lines) > 0) {
 			for (var _i=array_length(self.__listeners)-1; _i>=0; _i-=1) {
@@ -118,6 +137,10 @@ function DeploymentManager() constructor {
 			if (_delete_amount > 0) {
 				array_delete(self.__output_buffer, 0, _delete_amount);
 			}
+		}
+		
+		if (_restart) {
+			self.restart(false);
 		}
 	}
 }

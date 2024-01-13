@@ -7,16 +7,6 @@ function HttpServerRequestContext(_request, _response=undefined, _logger=undefin
 	static session_storage = {};
 	static session_cookie_name = "htgm-session";
 	
-	// cleanup expried sessions
-	static session_cleanup_timer = call_later(10, time_source_units_seconds, function() {
-		array_foreach(struct_get_names(HttpServerRequestContext.session_storage), function(_session_id) {
-			var _session = HttpServerRequestContext.session_storage[$ _session_id];
-			if (!_session.is_valid()) {
-				struct_remove(HttpServerRequestContext.session_storage, _session_id);	
-			}
-		});
-	}, true);
-	
 	self.request = _request;
 	self.response = _response;
 	self.session = undefined;

@@ -6,8 +6,8 @@ function ViewLogIn(): HtmxView() constructor {
 	
 	static modal_id = self.auto_id("modal");
 	
-	static last_attempt = 0;
 	static max_attempt_speed = 5000000; // in microseconds
+	static last_attempt = get_timer() - max_attempt_speed;
 
 	static render = function(_context) {
 		var _validation = new self.__Validation();

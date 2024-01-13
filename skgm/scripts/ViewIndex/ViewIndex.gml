@@ -43,7 +43,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 			/// Feather ignore once GM1009
 			return @'
 				<!DOCTYPE html>
-				<html data-theme="light" lang="en"style="height: 100%">
+				<html data-theme="light" lang="en" style="height: 100%">
 				<head>
 					<meta charset="utf-8">
 					<title>'+ (self.__find_title(_rendered.route) ?? _website_name) +@'</title>
@@ -58,17 +58,17 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 					'+ (struct_exists(_rendered.context.data, "redirect") ? $"<meta http-equiv='Refresh' content='0; URL={_rendered.context.data.redirect}' />" : "") +@'
 					
 					<meta name="description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
-					<meta name="theme-color" content="#76428a" />
+					<meta name="theme-color" content="#3f3f74" />
 
 					<meta property="og:type" content="website" />
 					<meta property="og:title" content="'+ _website_name +@'" />
-					<meta property="og:description" content="An open source control panel to allow easy updating and administration of GameMaker servers."
+					<meta property="og:description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
 					<meta property="og:image" content="https://skgm.meseta.dev/static/opengraph.png" />
 
 					<meta property="twitter:card" content="summary_large_image" />
 					<meta property="twitter:title" content="'+ _website_name +@'" />
 					<meta property="twitter:description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
-					<meta property="twitter:image" content="https://sk.meseta.dev/static/opengraph.png" />
+					<meta property="twitter:image" content="https://skgm.meseta.dev/static/opengraph.png" />
 				</head>
 				<body style="min-height: 100%; background-image: linear-gradient(180deg, transparent, #00000019); background-attachment: fixed;">
 					'+ _rendered.navigation +@'

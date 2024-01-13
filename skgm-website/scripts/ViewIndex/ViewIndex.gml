@@ -27,7 +27,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 			/// Feather ignore once GM1009
 			return @'
 				<!DOCTYPE html>
-				<html data-theme="light" lang="en"style="height: 100%">
+				<html data-theme="light" lang="en" style="height: 100%">
 				<head>
 					<meta charset="utf-8">
 					<title>'+ self.title +@'</title>
@@ -39,7 +39,7 @@ function ViewIndex(): HttpServerRenderBase() constructor {
 					<script src="/static/htmx/htmx.min.js"></script>
 					
 					<meta name="description" content="An open source control panel to allow easy updating and administration of GameMaker servers." />
-					<meta name="theme-color" content="#76428a" />
+					<meta name="theme-color" content="#3f3f74" />
 
 					<meta property="og:type" content="website" />
 					<meta property="og:title" content="ServerKit GameMaker" />

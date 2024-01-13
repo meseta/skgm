@@ -16,6 +16,8 @@ SKGM is built in GameMaker, and using the [HTGM web framework](https://htgm.mese
 SKGM was created by [Meseta](https://meseta.dev), released under the MIT open source license, and is free to use for commercial and non-commercial projects. The project is released as-is, and no support or warranties are provided, but those working on GameMaker projects in general may find help from the friendly [GameMaker community on Discord](https://discord.gg/gamemaker).
 
 ## Change History
+* v1.1.0
+  * Add auto-restart on crash setting, update HTGM
 * v1.0.1
   * Fix main screen redirect when not logged in
   * Fix crash on initial deploy

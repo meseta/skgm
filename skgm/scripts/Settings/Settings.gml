@@ -6,6 +6,7 @@ function Settings(_settings_file_location="settings.json") constructor {
 		website_name: self.__get_env("SKGM_WEBSITE_NAME", "ServerKit GameMaker"),
 		port: self.__get_env("SKGM_PORT", "5000"),
 		display: self.__get_env("SKGM_DISPLAY", ":0"),
+		auto_restart: true,
 		version: self.version,
 	};
 	

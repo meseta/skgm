@@ -10,6 +10,12 @@ function ViewSettings(): HtmxView() constructor {
 	static render = function(_context) {
 		var _message = undefined;
 		if (_context.request.method == "POST") {
+			if (is_string(_context.request.get_form("settings"))) {
+				var _auto_restart = !!_context.request.get_form("auto_restert");
+				DATA.settings.set("auto_restart", _auto_restart);
+				_context.logger.info("Settings saved", {auto_restart: _auto_restart});
+				_message = "Settings saved";
+			}
 			if (is_string(_context.request.get_form("sentry"))) {
 				var _dsn = strip_quotes(HttpServer.url_decode(_context.request.get_form("sentry")));
 				_context.logger.info("Setting Sentry DSN", {dsn: _dsn})
@@ -41,6 +47,24 @@ function ViewSettings(): HtmxView() constructor {
 		}
 		
 		_render += @'
+			<form hx-boost="true" hx-target="#'+ ViewMain.content_id +@'" action="/'+ self.path +@'" method="POST">
+			<article>
+				<header>
+					<h1 style="margin-bottom: 0;">Deployment Settings</h1>
+				</header>
+				
+				<p>
+					<input type="checkbox" name="auto_restart" id="auto_restart" '+ (DATA.settings.get("auto_restart") ? "checked" : "") +@'>
+					<label for="auto_restart">Auto Restart deployment if crashed</label>
+				</p>
+				
+				<footer style="text-align: right;">
+					<input type="hidden" name="settings" value="true">
+					<button style="display: inline; width: auto;" type="submit">Update</button>
+				</footer>
+			</article>
+			</form>
+			
 			<form hx-boost="true" hx-target="#'+ ViewMain.content_id +@'" action="/'+ self.path +@'" method="POST">
 			<article>
 				<header>
