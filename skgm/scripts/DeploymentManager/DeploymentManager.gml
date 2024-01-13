@@ -6,6 +6,7 @@ function DeploymentManager() constructor {
 	
 	self.__output_buffer = [];
 	self.__timer = undefined;
+	self.__monitor = undefined;
 	
 	self.__listeners = [];
 	
@@ -57,7 +58,11 @@ function DeploymentManager() constructor {
 		if (!is_undefined(self.__timer) && time_source_exists(self.__timer)) {
 			call_cancel(self.__timer);
 		}
-		self.__timer = call_later(1, time_source_units_frames, method(self, self.__collect_output), true);
+		self.__timer = call_later(2, time_source_units_frames, method(self, self.__collect_output), true);
+		if (!is_undefined(self.__monitor) && time_source_exists(self.__monitor)) {
+			call_cancel(self.__monitor);
+		}
+		self.__monitor = call_later(5, time_source_units_frames, method(self, self.__monitor_deployment), true);
 	}
 	
 	/** Restart the current deployment
@@ -109,17 +114,7 @@ function DeploymentManager() constructor {
 			array_push(self.__output_buffer, _filtered_line);
 			array_push(_lines, _filtered_line);
 		}
-		
-		// check if crashed
-		var _restart = false;
-		if (DATA.settings.get("auto_restart") && self.is_crashed()) {
-			var _message = "SKGM: crash detected, restarting";
-			array_push(self.__output_buffer, _message);
-			array_push(_lines, _message);
-			LOGGER.warning(_message);
-			_restart = true;
-		}
-		
+
 		// push to listeners
 		if (array_length(_lines) > 0) {
 			for (var _i=array_length(self.__listeners)-1; _i>=0; _i-=1) {
@@ -138,8 +133,25 @@ function DeploymentManager() constructor {
 				array_delete(self.__output_buffer, 0, _delete_amount);
 			}
 		}
-		
-		if (_restart) {
+	}
+	
+	
+	/** Collect the stdout into a limited length array
+	 * @ignore
+	 */
+	static __monitor_deployment = function() {
+		// check if crashed
+		if (DATA.settings.get("auto_restart") && self.is_crashed()) {
+			var _message = "SKGM: crash detected, restarting";
+			array_push(self.__output_buffer, _message);
+			
+			array_foreach(self.__listeners, function(_listener) {
+				if (weak_ref_alive(_listener)) {
+					_listener.ref.push_lines([_message]);	
+				}
+			});
+			
+			LOGGER.warning(_message);
 			self.restart(false);
 		}
 	}

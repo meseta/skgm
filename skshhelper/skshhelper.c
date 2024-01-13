@@ -36,7 +36,6 @@ double sk_is_open(char* id) {
 
   char cmd[CMDSIZE] = {0};
   snprintf(cmd, CMDSIZE, "pgrep -f %s%s | wc -l", skshhelper_prefix, id);
-  printf("skshhelper checking is_open %s\n", id);
 
   FILE *fp_check = popen(cmd, "r");
   if (fp_check == NULL) {
