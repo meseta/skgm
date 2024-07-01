@@ -63,6 +63,8 @@ function DeploymentManager() constructor {
 			call_cancel(self.__monitor);
 		}
 		self.__monitor = call_later(5, time_source_units_frames, method(self, self.__monitor_deployment), true);
+		
+		DATA.settings.set("last_deployment", _deployment_id);
 	}
 	
 	/** Restart the current deployment

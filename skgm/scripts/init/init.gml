@@ -42,6 +42,16 @@ else {
 		
 		// send backup reports
 		SENTRY.send_all_backed_up_reports();
+		
+		// start any old deployments
+		if (DATA.settings.get("auto_start")) {
+			var _deployment_id = DATA.settings.get("last_deployment");
+			if (_deployment_id != "") {
+				LOGGER.info("Auto starting deployment", {deployment_id: _deployment_id});
+				 var _path = DATA.deployment_storage.get_path(_deployment_id);
+				DATA.deployment_manager.deploy(_deployment_id, _path);
+			}
+		}
 	});
 
 }

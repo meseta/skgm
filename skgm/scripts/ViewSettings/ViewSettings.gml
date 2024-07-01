@@ -13,7 +13,9 @@ function ViewSettings(): HtmxView() constructor {
 			if (is_string(_context.request.get_form("settings"))) {
 				var _auto_restart = !!_context.request.get_form("auto_restert");
 				DATA.settings.set("auto_restart", _auto_restart);
-				_context.logger.info("Settings saved", {auto_restart: _auto_restart});
+				var _auto_start = !!_context.request.get_form("auto_start");
+				DATA.settings.set("auto_start", _auto_start);
+				_context.logger.info("Settings saved", {auto_start: _auto_start, auto_restart: _auto_restart});
 				_message = "Settings saved";
 			}
 			if (is_string(_context.request.get_form("sentry"))) {
@@ -53,6 +55,10 @@ function ViewSettings(): HtmxView() constructor {
 					<h1 style="margin-bottom: 0;">Deployment Settings</h1>
 				</header>
 				
+				<p>
+					<input type="checkbox" name="auto_start" id="auto_start" '+ (DATA.settings.get("auto_start") ? "checked" : "") +@'>
+					<label for="auto_start">Auto Start deployment on SKGM startup</label>
+				</p>
 				<p>
 					<input type="checkbox" name="auto_restart" id="auto_restart" '+ (DATA.settings.get("auto_restart") ? "checked" : "") +@'>
 					<label for="auto_restart">Auto Restart deployment if crashed</label>

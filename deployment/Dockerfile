@@ -8,7 +8,7 @@ WORKDIR /usr/local/bin
 COPY entrypoint.sh ./
 
 # get SKGM
-RUN curl -L https://github.com/meseta/skgm/releases/download/v1.1.1/skgm.AppImage -o ./skgm.AppImage
+RUN curl -L https://github.com/meseta/skgm/releases/download/v1.2.0/skgm.AppImage -o ./skgm.AppImage
 RUN chmod +x skgm.AppImage entrypoint.sh
 
 # Add unpriviliged user

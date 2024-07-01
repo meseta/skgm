@@ -19,6 +19,7 @@ function Sentry(_dsn="") constructor {
 		ask_to_send: true,
 		ask_to_send_report: true,
 		error_message: "Sorry, an error occurred and the game had to close\r\r",
+		show_error_message: true,
 		show_stacktrace: true,
 		separator: "______________________________________________________________________\r\r",
 		question: "Would you like to submit this error as a bug report?",
@@ -26,12 +27,15 @@ function Sentry(_dsn="") constructor {
 		newline: "\r",
 		include_parameters: false,
 		include_device_hash: false,
+		compress_payload: true,
 	}
 	/* @ignore */ self.__requests = {};
 	/* @ignore */ self.__sentry_handled = false;
 	/* @ignore */ self.__enable_send = false;
+	/* @ignore */ self.__logger = undefined;
+	/* @ignore */ self.__app_version = GM_version;
 	/* @ignore */ static __sentry_log_file_prefix = "sentry_";
-	/* @ignore */ static __version = "1.1.0";
+	/* @ignore */ static __version = "1.1.1";
 	
 	// This global facilitates loose coupling between exceptions and sentry
 	global.sentry_last_exception = {message: "", stacktrace: []};
@@ -94,6 +98,15 @@ function Sentry(_dsn="") constructor {
 		self.__enable_send = true;
 	}
 	
+	/** Enables Sentry to use a logger for outputting the final log
+	 * @param {Struct.LOGGER} _logger The Logger instance to use
+	 */
+	static use_logger = function(_logger) {
+		// Attach a sentry instance to logger, to automatically add breadcrumbs
+		// and optionally automatically send to sentry on errors
+		self.__logger = _logger;
+	};
+	
 	/** Add a tag to this Sentry instance, the tag is included in all reports
 	 * @param {String} _key The tag key
 	 * @param {String} _value The tag value
@@ -110,6 +123,20 @@ function Sentry(_dsn="") constructor {
 		if (struct_exists(self.__tags, _key)) {
 			struct_remove(self.__tags, _key);
 		}
+	}
+	
+	/** Sets the app version to a different value
+	 * @param {String} _value The app version
+	 */
+	static set_app_version = function(_value) {
+		self.__app_version = _value;
+	}
+	
+	/** Gets whether is set up to send
+	 * @return {Boolean}
+	 */
+	static is_ready = function() {
+		return self.__enable_send
 	}
 	
 	/** Add a breadcrumb to keep track of. Breadcrumbs are included with any sentry report
@@ -134,7 +161,7 @@ function Sentry(_dsn="") constructor {
 		
 		// trim to length
 		if (array_length(self.__breadcrumbs) > self.__options.breadcrumbs_max) {
-			array_delete(self.__breadcrumbs, 0, 1);	
+			array_shift(self.__breadcrumbs);	
 		}
 	}
 	
@@ -219,24 +246,17 @@ function Sentry(_dsn="") constructor {
 		}
 		self.__sentry_handled = true;
 		
-		// special HTML5 handling
-		if (!is_struct(_err) && !is_string(_err)) {
-			var _message = string(_err);
-			var _tracearray = debug_get_callstack();
-			var _count = array_length(_tracearray);
-			var _stacktrace = array_create(_count);
-			for (var _i=0; _i<_count; _i++) {
-				var _struct = {};
-				var _func = _tracearray[_i];
-				var _func_clean = _func;
-				
-				var _pos = string_pos("(", _func);
-				if (_pos > 0) {
-					_func_clean = string_copy(_func, 1, _pos-1);
-				}
-				_struct[$ "function"] = _func_clean;
-				_struct[$ "context_line"] = _func;
-				_stacktrace[_i] = _struct;
+		var _message = "";
+		var _tracearray = [];
+		
+		if (is_string(_err)) { // HTML5 specific. see patch patch_http_fix_recursive_error.js
+			try {
+				_err = json_parse(_err);
+				_message = _err[$ "message"];
+				_tracearray = string_split(_err[$ "stack"] ?? "", "\n");
+			}
+			catch (_) {
+				_message = string(_err);
 			}
 		}
 		else {
@@ -253,21 +273,26 @@ function Sentry(_dsn="") constructor {
 					var _tracearray = global.sentry_last_exception.stacktrace;
 				}
 				else {
-					var _message = _line;
-					var _tracearray = _err.stacktrace;
+					_message = _line;
+					_tracearray = _err.stacktrace;
 				}
 			}
 			else {
-				var _message = _err.message;
-				var _tracearray = _err.stacktrace;
+				_message = _err.message;
+				_tracearray = _err.stacktrace;
 			}
-			var _stacktrace = self.__format_stacktrace(_tracearray);
 		}
+		var _stacktrace = self.__format_stacktrace(_tracearray);
 	
 		var _payload = self.__create_payload("error", _message, _stacktrace);
 		var _send = self.__show_popup_and_send_confirmation(_message, _stacktrace)
+		
 		if (_send) {
 			self.__save_and_send(_payload, undefined, undefined);
+		}
+		
+		if (!is_undefined(self.__logger)) {
+			self.__logger.fatal("FATAL ERROR", {message: _message, stacktrace: _stacktrace});
 		}
 	}
 	
@@ -294,7 +319,11 @@ function Sentry(_dsn="") constructor {
 			}
 		}
 
-		var _popup = self.__options.error_message + _message;
+		var _popup = self.__options.error_message;
+		
+		if (self.__options.show_error_message) {
+			_popup += _message;
+		}
 			
 		if (self.__options.show_stacktrace) {
 			_popup = self.__options.separator +
@@ -302,7 +331,7 @@ function Sentry(_dsn="") constructor {
 					self.__options.separator +
 					"STACKTRACE:" + _trace_lines;
 		}
-			
+		
 		show_debug_message(_popup);
 		
 		var _send = true;
@@ -329,7 +358,10 @@ function Sentry(_dsn="") constructor {
 	static __save_and_send = function(_payload, _callback, _errback, _is_report=false) {
 		var _async_id = -1;
 		
-		var _compress = self.__compress_payload(_payload);
+		var _compress = undefined;
+		if (self.__options.backup_before_send || (self.__options.compress_payload && self.__enable_send)) {
+			_compress = self.__compress_payload(_payload);
+		}
 		
 		if (self.__options.backup_before_send) {
 			var _filename = self.__options.backup_path + self.__sentry_log_file_prefix + string(_payload.event_id);
@@ -337,7 +369,7 @@ function Sentry(_dsn="") constructor {
 		}
 		
 		if (self.__enable_send) {
-			_async_id = self.__sentry_request(_compress);
+			_async_id = self.__sentry_request(_compress ?? _payload);
 			self.__requests[$ string(_async_id)] = {
 				uuid: _payload.event_id,
 				callback: _callback,
@@ -348,7 +380,10 @@ function Sentry(_dsn="") constructor {
 				show_message(self.__options.thanks);
 			}
 		}
-		buffer_delete(_compress);
+		
+		if (!is_undefined(_compress)) {
+			buffer_delete(_compress);	
+		}
 	}
 
 	/** Make the sentry request
@@ -356,7 +391,7 @@ function Sentry(_dsn="") constructor {
 	 * @param {Real}
 	 * @ignore
 	 */
-	static __sentry_request = function(_buffer) {
+	static __sentry_request = function(_buffer_or_payload) {
 		var _x_auth = "Sentry sentry_version=7," +
 			        " sentry_client="+ game_project_name + "/" + GM_version + "," +
 		 			" sentry_timestamp=" + string(self.__unix_timestamp()) + "," +
@@ -368,10 +403,19 @@ function Sentry(_dsn="") constructor {
 	
 		var _headers = ds_map_create();
 		ds_map_add(_headers, "Content-Type", "application/json");
-		ds_map_add(_headers, "Content-Encoding", "deflate");
 		ds_map_add(_headers, "X-Sentry-Auth", _x_auth);
 		
-		var _async_id = http_request(self.__endpoint, "POST", _headers, _buffer);
+		var _async_id;
+		if (is_struct(_buffer_or_payload)) {
+			var _payload = json_stringify(_buffer_or_payload);
+			_async_id = http_request(self.__endpoint, "POST", _headers, _payload);
+		}
+		else {
+			// is buffer
+			ds_map_add(_headers, "Content-Encoding", "deflate");
+			var _async_id = http_request(self.__endpoint, "POST", _headers, _buffer_or_payload);
+		}
+
 		show_debug_message("Sent sentry request to "+ string(self.__endpoint))
 		AsyncWrapper.add_async_http_callback(method(self, self.__handle_async_load));	
 
@@ -394,11 +438,11 @@ function Sentry(_dsn="") constructor {
 		var _payload = {
 			level: _level,
 			logger: _logger,
-			event_id: __uuid4(),
-			timestamp: __unix_timestamp(),
+			event_id:  self.__uuid4(),
+			timestamp:  self.__unix_timestamp(),
 			platform: "other",
-			release: string_replace_all(game_display_name, " ", "-") + "@" + GM_version,
-			tags: __tags,
+			release: string_replace_all(game_display_name, " ", "-") + "@" + self.__app_version,
+			tags: self.__tags,
 			sdk: {
 				name: "GMSentry",
 				version: self.__version,
@@ -429,7 +473,7 @@ function Sentry(_dsn="") constructor {
 					build_type: os_get_config(),
 					code_is_compiled_: code_is_compiled(),
 					app_name: game_display_name,
-					app_version: GM_version,
+					app_version: self.__app_version,
 					debug_mode_: debug_mode,
 					app_build: __datetime_string(GM_build_date),
 				},
@@ -514,10 +558,23 @@ function Sentry(_dsn="") constructor {
 			var _pos = string_last_pos(":", _entry);
 			if (_pos > 0) {
 				var _lineno = string_delete(_entry, 1, _pos);
-				
 				if (string_digits(_lineno) == _lineno && _lineno != "") {
 					_struct[$ "function"] = string_copy(_entry, 1, _pos-1);
-					_struct[$ "lineno"] = real(_lineno);
+					_struct[$ "lineno"] = real(string_digits(_lineno));
+					array_push(_frames, _struct);
+					continue;
+				}
+				
+				// possibly HTML5 stacktrace
+				var _colno = string_delete(_entry, 1, _pos);
+				var _residual = string_copy(_entry, 1, _pos-1);
+				var _pos2 = string_last_pos(":", _residual);
+				var _lineno = string_delete(_residual, 1, _pos2);
+				
+				if (string_digits(_colno) != "" && string_digits(_lineno) != "") {
+					_struct[$ "function"] = string_copy(_residual, 1, _pos2-1);
+					_struct[$ "lineno"] = real(string_digits(_lineno));
+					_struct[$ "colno"] = real(string_digits(_colno));
 					array_push(_frames, _struct);
 					continue;
 				}
@@ -554,7 +611,7 @@ function Sentry(_dsn="") constructor {
 				show_debug_message("Sentry request succeeded");
 		
 				if (self.__options.backup_autoclean) {
-					var _filename = self.__options.backup_path + __sentry_log_file_prefix + string(_request.uuid);
+					var _filename = self.__options.backup_path + self.__sentry_log_file_prefix + string(_request.uuid);
 					if (file_exists(_filename)) {
 						file_delete(_filename);
 						show_debug_message("Sentry backup file no longer needed and deleted: "+_filename);
