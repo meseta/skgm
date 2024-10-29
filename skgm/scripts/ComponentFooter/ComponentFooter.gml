@@ -16,7 +16,7 @@ function ComponentFooter(): HtmlComponent() constructor {
 				
 				<p style="text-align: center; color: var(--muted-color);">
 					<small>
-						<a href="https://skgm.meseta.dev">SKGM</a>
+						<a href="https://skgm.meseta.dev">SKGM v'+ GM_version +@'</a>
 					</small>
 				</p>
 			</footer>

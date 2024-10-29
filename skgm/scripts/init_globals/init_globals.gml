@@ -15,6 +15,7 @@ function init_globals() {
 	// Sentry
 	#macro SENTRY global.sentry
 	SENTRY = new Sentry(DATA.settings.get("sentry_dsn"));
+	SENTRY.set_app_version(GM_version);
 	LOGGER.use_sentry(SENTRY);
 
 	// The webserver
