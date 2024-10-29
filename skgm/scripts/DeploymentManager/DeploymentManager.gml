@@ -10,6 +10,9 @@ function DeploymentManager() constructor {
 	
 	self.__listeners = [];
 	
+	self.healthcheck_client = new HttpClient("", "healthcheck");
+	self.healthcheck_failures = 0;
+	
 	/** Get the currently deployed deployment_id
 	 * @return {String}
 	 */
@@ -155,6 +158,23 @@ function DeploymentManager() constructor {
 			
 			LOGGER.warning(_message);
 			self.restart(false);
+		}
+		
+		var _healthcheck_path = DATA.settings.get("healthcheck_path");
+		if (_healthcheck_path != "") {
+			self.healthcheck_client.get(_healthcheck_path, undefined, 5)
+				.chain_callback(function() {
+					self.healthcheck_failures = 0;
+				})
+				.on_error(function(_err) {
+					self.healthcheck_failures += 1;
+					LOGGER.warning("Healthcheck failed", {count: self.healthcheck_failures, err: _err});
+						
+					if (self.healthcheck_failures > 5) {
+						LOGGER.warning("Healthcheck failed too many times, restarting", {count: self.healthcheck_failures});
+						self.restart(false);
+					}
+				});
 		}
 	}
 }

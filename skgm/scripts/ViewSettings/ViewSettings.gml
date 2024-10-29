@@ -15,7 +15,9 @@ function ViewSettings(): HtmxView() constructor {
 				DATA.settings.set("auto_restart", _auto_restart);
 				var _auto_start = !!_context.request.get_form("auto_start");
 				DATA.settings.set("auto_start", _auto_start);
-				_context.logger.info("Settings saved", {auto_start: _auto_start, auto_restart: _auto_restart});
+				var _healthcheck_path = _context.request.get_form("healthcheck_path") ?? "";
+				DATA.settings.set("healthcheck_path", _healthcheck_path);
+				_context.logger.info("Settings saved", {auto_start: _auto_start, auto_restart: _auto_restart, healthcheck_path: _healthcheck_path});
 				_message = "Settings saved";
 			}
 			if (is_string(_context.request.get_form("sentry"))) {
@@ -63,6 +65,11 @@ function ViewSettings(): HtmxView() constructor {
 					<input type="checkbox" name="auto_restart" id="auto_restart" '+ (DATA.settings.get("auto_restart") ? "checked" : "") +@'>
 					<label for="auto_restart">Auto Restart deployment if crashed</label>
 				</p>
+				
+				<p>
+					<label for="healthcheck_path">Healthcheck Path</label>
+				</p>
+				<input type="text" name="healthcheck_path" placeholder="http://localhost:5000/healthz" aria-label="Healthcheck Path" value="'+ DATA.settings.get("healthcheck_path") +@'" required>
 				
 				<footer style="text-align: right;">
 					<input type="hidden" name="settings" value="true">

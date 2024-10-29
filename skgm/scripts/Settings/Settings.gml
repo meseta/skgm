@@ -9,6 +9,7 @@ function Settings(_settings_file_location="settings.json") constructor {
 		auto_start: true,
 		auto_restart: true,
 		last_deployment: "",
+		healthcheck_path: "",
 		version: self.version,
 	};
 	
