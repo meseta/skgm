@@ -61,11 +61,11 @@ function DeploymentManager() constructor {
 		if (!is_undefined(self.__timer) && time_source_exists(self.__timer)) {
 			call_cancel(self.__timer);
 		}
-		self.__timer = call_later(2, time_source_units_frames, method(self, self.__collect_output), true);
+		self.__timer = call_later(0.25, time_source_units_seconds, method(self, self.__collect_output), true);
 		if (!is_undefined(self.__monitor) && time_source_exists(self.__monitor)) {
 			call_cancel(self.__monitor);
 		}
-		self.__monitor = call_later(30, time_source_units_frames, method(self, self.__monitor_deployment), true);
+		self.__monitor = call_later(30, time_source_units_seconds, method(self, self.__monitor_deployment), true);
 		
 		DATA.settings.set("last_deployment", _deployment_id);
 	}
@@ -87,6 +87,8 @@ function DeploymentManager() constructor {
 					}
 				});
 			}
+			
+			self.healthcheck_failures = 0;
 		}
 	}
 	

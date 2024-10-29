@@ -1,6 +1,6 @@
 services:
   skgm:
-    image: meseta/skgm:v1.3.3
+    image: meseta/skgm:v1.3.4
     build:
       context: .
       dockerfile: Dockerfile
