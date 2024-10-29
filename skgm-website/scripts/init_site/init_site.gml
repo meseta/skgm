@@ -10,5 +10,10 @@ function init_site(){
 
 	// add views
 	SERVER.add_renders_by_tag("http_view");
+	
+	// healthcheck
+	SERVER.add_path("healthz", function(_context) {
+		_context.response.send_string("OK");
+	});
 }
 

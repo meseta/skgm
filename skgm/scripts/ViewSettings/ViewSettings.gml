@@ -11,7 +11,7 @@ function ViewSettings(): HtmxView() constructor {
 		var _message = undefined;
 		if (_context.request.method == "POST") {
 			if (is_string(_context.request.get_form("settings"))) {
-				var _auto_restart = !is_undefined(_context.request.get_form("auto_restert"));
+				var _auto_restart = !is_undefined(_context.request.get_form("auto_restart"));
 				DATA.settings.set("auto_restart", _auto_restart);
 				var _auto_start = !is_undefined(_context.request.get_form("auto_start"));
 				DATA.settings.set("auto_start", _auto_start);
